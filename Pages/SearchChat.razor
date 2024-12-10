@@ -1,0 +1,258 @@
+@page "/searchChat"
+@using MyBlazorWasmApp.Models
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="chat-container">
+    <div class="chat-body">
+        @foreach (var message in Messages)
+        {
+            <div class="chat-message border @(message.IsUser ? "user-message" : "bot-message")">
+                <p class="m-0">@message.Content</p>
+
+                @if (!message.IsUser && message.IsLoading)
+                {
+                    <div class="d-flex justify-content-center typing-indicator">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                }
+                else if (!message.IsUser && !message.IsLoading && message.Sources?.Any() == true)
+                {
+                    <p class="lead"><i class="bi bi-sourceforge"></i> Sources: </p>
+                    <div class="sources-section">
+                        @if (message.Sources.Count <= 4)
+                        {
+                            <!-- Display all sources if count is 4 or less -->
+                            @foreach (var source in message.Sources)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="@source.Url" target="_blank" class="text-decoration-none text-primary">
+                                                @source.Title
+                                            </a>
+                                        </h5>
+
+                                        <!-- Display image or placeholder icon -->
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            @if (!string.IsNullOrEmpty(source.Image))
+                                            {
+                                                <img src="@source.Image" alt="@source.Url" class="img-fluid rounded" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-image" style="font-size: 2rem;"></i> <!-- Bootstrap icon as placeholder -->
+                                            }
+                                            <span class="source-url">
+                                                @source.Url
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <!-- Show only 3 sources and the "View All" button if there are more than 4 -->
+                            @foreach (var source in message.Sources.Take(3))
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="@source.Url" target="_blank" class="text-decoration-none text-primary">
+                                                @source.Title
+                                            </a>
+                                        </h5>
+
+                                        <!-- Display image or placeholder icon -->
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(source.Image))
+                                            {
+                                                <img src="@source.Image" alt="@source.Url" class="img-fluid rounded" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-image" style="font-size: 2rem;"></i> <!-- Bootstrap icon as placeholder -->
+                                            }
+                                            <span class="source-url ms-3">
+                                                @source.Url
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="card mb-3 view-all-card">
+                                <div class="card-body text-center">
+                                    <a href="javascript:void(0);" class="btn btn-link text-primary" @onclick="() => ShowAllSources(message)">
+                                        View All Sources
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="answer-section mt-3">
+                        <p class="lead"><i class="bi bi-braces"></i> Answer: </p>
+                        <p>@message.Answer.Content</p>
+                        @if (message.Answer.Examples?.Any() == true)
+                        {
+                            <div class="examples-section mt-2">
+                                <p><strong>Examples:</strong></p>
+                                <ul>
+                                    @foreach (var example in message.Answer.Examples)
+                                    {
+                                        <li>@example</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(message.Answer.Metadata))
+                        {
+                            <div class="text-muted">
+                                <small>@message.Answer.Metadata</small>
+                            </div>
+                        }
+                    </div>
+                    <div class="response-actions d-flex justify-content-between mt-3">
+                        <button class="btn btn-transparent btn-sm" @onclick="() => ShareResponse(message)">
+                            <i class="bi bi-share"></i> Share
+                        </button>
+                        <div>
+                            <button class="btn btn-transparent p-0" @onclick="() => RateResponse(message, true)">
+                                <i class="bi bi-hand-thumbs-up"></i>
+                            </button>
+                            <button class="btn btn-transparent p-0 ms-2" @onclick="() => RateResponse(message, false)">
+                                <i class="bi bi-hand-thumbs-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="chat-input-container">
+        <div class="input-group">
+            <textarea @bind="UserInput" @onclick:preventDefault="true" @onkeydown="HandleKeyDown" @oninput="HandleInput"
+                class="form-control custom-textarea" placeholder="Type your message..." rows="1">
+            </textarea>
+            <button @onclick="SendMessage" class="btn btn-primary">
+                <i class="bi bi-send"></i> Send
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string UserInput { get; set; } = string.Empty;
+    private List<Message> Messages { get; set; } = new List<Message>();
+    private bool IsLoading { get; set; } = false;
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(UserInput))
+        {
+            var userMessage = new Message { Content = UserInput.Trim(), IsUser = true };
+            Messages.Add(userMessage);
+
+            var botLoadingMessage = new Message
+            {
+                IsUser = false,
+                IsLoading = true,
+                Content = string.Empty
+            };
+            Messages.Add(botLoadingMessage);
+
+            UserInput = string.Empty;
+
+            Task.Delay(2000).ContinueWith(_ =>
+            {
+                Messages.Remove(botLoadingMessage);
+                var botResponseMessage = new Message
+                {
+                    IsUser = false,
+                    Answer = new Answer
+                    {
+                        Content = "Based on the sources below, here's a summarized response regarding Blazor and JavaScript integration. We gathered relevant details to help you understand how these two technologies work together efficiently. See the examples for further clarification.",
+                        Metadata = "Summary generated from multiple trusted sources, updated in real-time.",
+                        Examples = new List<string>
+                        {
+                            "Example 1: How to call JavaScript functions from Blazor components.",
+                            "Example 2: JavaScript Interop in Blazor for accessing browser features."
+                        }
+                    },
+                    Sources = new List<Source>
+                    {
+                        new Source
+                        {
+                            Title = "Blazor Documentation - Official",
+                            Url = "https://docs.microsoft.com/en-us/aspnet/core/blazor/",
+                            Image = ""
+                        },
+                        new Source
+                        {
+                            Title = "JavaScript Interop in Blazor",
+                            Url = "https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interop/",
+                            Image = ""
+                        },
+                        new Source
+                        {
+                            Title = "Mastering Blazor for Web Development",
+                            Url = "https://example.com/mastering-blazor",
+                            Image = ""
+                        },
+                        new Source
+                        {
+                            Title = "Blazor UI Design Patterns",
+                            Url = "https://example.com/blazor-ui",
+                            Image = ""
+                        },
+                        new Source
+                        {
+                            Title = "Optimizing Blazor Applications",
+                            Url = "https://example.com/blazor-optimizing",
+                            Image = ""
+                        }
+                    }
+                };
+                Messages.Add(botResponseMessage);
+                InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            SendMessage();
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        UserInput = e.Value?.ToString().TrimEnd();
+    }
+
+    private void ShowAllSources(Message message)
+    {
+        message.Sources.ForEach(source =>
+        {
+            Console.WriteLine($"Source: {source.Title} - {source.Url}");
+        });
+    }
+
+    private void ShareResponse(Message message)
+    {
+        Console.WriteLine("Shared response: " + message.Answer.Content);
+    }
+
+    private void RateResponse(Message message, bool isLiked)
+    {
+        if (isLiked)
+            Console.WriteLine("Liked response: " + message.Answer.Content);
+        else
+            Console.WriteLine("Disliked response: " + message.Answer.Content);
+    }
+}

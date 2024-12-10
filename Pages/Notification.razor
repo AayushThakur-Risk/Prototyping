@@ -1,0 +1,208 @@
+@page "/notification"
+@using System.Collections.Generic
+@using System
+@using System.Linq
+@using System.Threading.Tasks
+@using MyBlazorWasmApp.Models
+
+<h3 class="text-center mb-4">URL Health Status Dashboard</h3>
+
+<div class="mb-4">
+    <!-- Use Bootstrap grid system to place the filter inputs -->
+    <div class="row justify-content-between">
+        <!-- Search Filter Input -->
+        <div class="col mb-3">
+            <label for="searchQuery" class="form-label">Search</label>
+            <input type="text" id="searchQuery" class="form-control"
+                placeholder="Search by URL, Health Status, or Content Change..." @bind="SearchQuery"
+                @oninput="OnSearchInputChanged" />
+        </div>
+
+        <!-- Time Filter Dropdown -->
+        <div class="col mb-3">
+            <label for="timeFilter" class="form-label">Filter by Time Since Last Scrape</label>
+            <select id="timeFilter" class="form-select" @bind="SelectedTimeFilter">
+                <option value="all">All</option>
+                <option value="lastHour">Last Hour</option>
+                <option value="last24Hours">Last 24 Hours</option>
+                <option value="lastWeek">Last Week</option>
+                <option value="lastMonth">Last Month</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="table-wrapper" style="max-width: 90vw; overflow-x: auto;">
+    <div class="table-responsive shadow-sm pb-3 mb-5 bg-white rounded" style="max-height: 71vh; overflow-y: auto;">
+        <table class="table table-striped table-hover table-sm text-secondary">
+            <thead class="sticky-header">
+                <tr>
+                    <th style="min-width: 200px;" class="text-center align-middle">URL</th>
+                    <th style="width: 120px;" class="text-center align-middle">Health Status</th>
+                    <th style="width: 180px;" class="text-center align-middle">Last Scraped</th>
+                    <th style="width: 120px;" class="text-center align-middle">% Change</th>
+                    @foreach (var keyword in Keywords)
+                    {
+                        <th style="min-width: 150px;" class="text-center align-middle">@keyword</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var urlDetail in FilteredUrlDetails)
+                {
+                    <tr>
+                        <td class="text-center align-middle">
+                            <a href="@urlDetail.Url" target="_blank" title="@urlDetail.Url"
+                                class="text-truncate d-inline-block"
+                                style="max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                @urlDetail.Url
+                            </a>
+                        </td>
+                        <td class="text-center align-middle">
+                            <i class="bi @(urlDetail.IsBroken ? "bi-exclamation-circle-fill text-danger" : "bi-check-circle-fill text-success")"
+                                style="font-size: 1.5rem;" title="@(urlDetail.IsBroken ? "Broken" : "Healthy")"></i>
+                        </td>
+                        <td class="text-center align-middle">
+                            @(DateTime.Now - urlDetail.TimeSinceLastScrape)
+                        </td>
+                        <td class="text-center align-middle text-secondary">@(CalculatePercentageChange(urlDetail))%</td>
+                        @foreach (var keyword in Keywords)
+                        {
+                            <td class="text-center align-middle">
+                                @if (urlDetail.ContentChanges != null && urlDetail.ContentChanges.ContainsKey(keyword))
+                                {
+                                    @if (urlDetail.ContentChanges[keyword])
+                                    {
+                                        <i class="bi bi-card-list text-success" style="font-size: 1.5rem;"
+                                            title="'@keyword' has changed"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-ban text-danger" style="font-size: 1.5rem;"
+                                            title="'@keyword' has not changed"></i>
+                                    }
+                                }
+                                else
+                                {
+                                    <i class="bi bi-ban text-muted" style="font-size: 1.5rem;"
+                                        title="No data available for '@keyword'"></i>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private List<UrlDetail> UrlDetails { get; set; } = new List<UrlDetail>();
+    private List<string> Keywords { get; set; } = new List<string> {
+        "Terms of Use", "Privacy Policy", "Disclaimer", "Court Page", "Court Terms",
+        "Courtroom Procedures", "Links to Contacts", "Tickets", "Traffic Citations",
+        "Pay Citations", "Payment Sites", "Docket", "Type/Classification of Court",
+        "Sub-Court(s)", "Portal", "Access the Portal"
+    };
+
+    private string SearchQuery { get; set; } = string.Empty;
+    private string SelectedTimeFilter { get; set; } = "all"; // Default time filter
+    private string LastSearchQuery { get; set; } = string.Empty;
+    private Task? DebounceTask { get; set; } = null;
+    private static readonly TimeSpan DebounceInterval = TimeSpan.FromMilliseconds(200); // Adjust debounce time as needed
+
+    // Filtered list of URLs based on the search query and selected time filter
+    private IEnumerable<UrlDetail> FilteredUrlDetails => UrlDetails
+        .Where(urlDetail =>
+        // Filter for SearchQuery
+        FilterBySearchQuery(urlDetail)
+        )
+        .Where(urlDetail =>
+        // Time filter logic
+        SelectedTimeFilter switch
+        {
+            "lastHour" => urlDetail.TimeSinceLastScrape <= TimeSpan.FromHours(1),
+            "last24Hours" => urlDetail.TimeSinceLastScrape <= TimeSpan.FromDays(1),
+            "lastWeek" => urlDetail.TimeSinceLastScrape <= TimeSpan.FromDays(7),
+            "lastMonth" => urlDetail.TimeSinceLastScrape <= TimeSpan.FromDays(30),
+            _ => true, // If "all" is selected, show all records
+        });
+
+    // Filtering logic for search query
+    private bool FilterBySearchQuery(UrlDetail urlDetail) {
+        string lowerSearchQuery = SearchQuery.ToLower();
+
+        // Search URL field
+        bool urlMatches = urlDetail.Url.ToLower().Contains(lowerSearchQuery);
+
+        // Search Health Status field
+        bool healthStatusMatches = urlDetail.HealthStatus.ToLower().Contains(lowerSearchQuery);
+
+        // Search through keywords and content changes
+        bool contentMatches = urlDetail.ContentChanges?.Any(keywordChange =>
+        Keywords.Any(keyword =>
+        keyword.ToLower().Contains(lowerSearchQuery) ||
+        (keywordChange.Key.ToLower().Contains(lowerSearchQuery) &&
+        keywordChange.Value.ToString().ToLower().Contains(lowerSearchQuery))
+        )) == true;
+
+        // Return true if any of the fields match
+        return urlMatches || healthStatusMatches || contentMatches;
+    }
+
+    // Trigger filter logic with debouncing
+    private async Task OnSearchInputChanged(ChangeEventArgs e) {
+        SearchQuery = e.Value.ToString();
+
+        // If a debounce task is already running, cancel it
+        if (DebounceTask != null)
+        {
+            await DebounceTask;
+        }
+
+        // Create a new debounce task to filter after a delay
+        DebounceTask = Task.Delay(DebounceInterval).ContinueWith(_ =>
+        {
+            // Trigger a re-render after the delay (filters applied)
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    protected override void OnInitialized() {
+        GenerateDummyData();
+    }
+
+    private void GenerateDummyData() {
+        var random = new Random();
+        for (int i = 1; i <= 20; i++)
+        {
+            var contentChanges = new Dictionary<string, bool>();
+
+            foreach (var keyword in Keywords)
+            {
+                contentChanges[keyword] = random.Next(0, 2) == 1;
+            }
+
+            bool isBroken = random.Next(0, 2) == 1;
+            UrlDetails.Add(new UrlDetail($"https://example{i}.com") // Ensure you're passing a URL string here
+                {
+                    IsBroken = isBroken,
+                    TimeSinceLastScrape = TimeSpan.FromHours(random.Next(1, 100)),
+                    ContentChanges = contentChanges,
+                    HealthStatus = isBroken ? "Broken" : "Healthy"
+                });
+        }
+    }
+
+    // Calculate the percentage of change in data based on keywords
+    private double CalculatePercentageChange(UrlDetail urlDetail) {
+        // Null check for ContentChanges
+        if (urlDetail.ContentChanges == null || !urlDetail.ContentChanges.Any())
+            return 0;
+
+        int totalKeywords = Keywords.Count;
+        int changedKeywords = urlDetail.ContentChanges.Values.Count(value => value);
+
+        return totalKeywords == 0 ? 0 : Math.Round((double)changedKeywords / totalKeywords * 100, 2);
+    }
+}

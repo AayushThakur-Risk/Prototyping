@@ -1,0 +1,103 @@
+@page "/courtSearch"
+@using MyBlazorWasmApp.Models
+
+<div class="container">
+    <div class="text-center pb-2 border-bottom">
+        <h3 class="fw-bold mb-4">Court Information Search</h3>
+        <div class="input-group mb-4 mx-auto" style="max-width: 600px;">
+            <input type="text" id="courtInput" class="form-control" @bind="courtName" placeholder="Enter court name" @onkeydown="HandleKeyDown" />
+            <button class="btn btn-primary" @onclick="SubmitCourtName">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="row justify-content-center mt-2">
+        <div class="col-md-8">
+            @if (isLoading)
+            {
+                <div class="text-center my-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @errorMessage
+                </div>
+            }
+            else if (urlList.Any())
+            {
+                @foreach (var urlInfo in urlList)
+                {
+                    <UrlCard Url="@urlInfo.Url" Title="@urlInfo.Title" IconUrl="@urlInfo.IconUrl"
+                             Category="@urlInfo.Category" CategoryColor="@urlInfo.CategoryColor"
+                             Summary="@urlInfo.Summary" PageType="@urlInfo.PageType" />
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string courtName = string.Empty;
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    private List<UrlInfo> urlList = new List<UrlInfo>();
+
+    private async Task HandleKeyDown(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Enter")
+        {
+            await SubmitCourtName();
+        }
+    }
+
+    private async Task SubmitCourtName()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+
+            // Simulate data loading (API call simulation)
+            await Task.Delay(1000); // Simulating an API call delay
+
+            // Clear the existing URL list before populating it
+            urlList.Clear();
+
+
+            if (!string.IsNullOrEmpty(courtName))
+            {
+                // Populate dummy data
+                for (int i = 1; i <= 10; i++)
+                {
+                    urlList.Add(new UrlInfo
+                    {
+                        Url = $"https://example.com/{courtName.ToLower().Replace(" ", "-")}-info-{i}",
+                        Title = $"{courtName} Case Study #{i}",
+                        IconUrl = "",
+                        Category = i % 3 == 0 ? "Legal Precedents" : i % 2 == 0 ? "Court Cases" : "Judgements",
+                        CategoryColor = i % 3 == 0 ? "#007bff" : i % 2 == 0 ? "#28a745" : "#ffc107",
+                        Summary = $"Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quidem nihil ducimus, minima tempora suscipit cumque vitae sequi quibusdam tempore similique provident, repudiandae eaque corrupti assumenda, nesciunt perferendis ab exercitationem?",
+                        PageType = i % 2 == 0 ? "Home Page" : "Search Page"
+                    });
+                }
+            }
+            else
+            {
+                errorMessage = "Please enter a court name to search.";
+            }
+        }
+        catch (Exception)
+        {
+            errorMessage = "An error occurred while processing your request. Please try again.";
+        }
+        finally
+        {
+            isLoading = false; // Ensure isLoading is set to false after completion
+        }
+    }
+}

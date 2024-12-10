@@ -1,0 +1,235 @@
+@page "/urlchangenotifier"
+@using System.Threading.Tasks
+@using MyBlazorWasmApp.Models
+
+<div class="container mt-2 mb-5 px-5 pb-2">
+    <!-- Overview Section as Tiles -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light">
+                <h6 class="text-muted">Total URLs</h6>
+                <p class="fs-2 fw-bold lead text-primary">@Urls.Count</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light">
+                <h6 class="text-muted">Changed URLs</h6>
+                <p class="fs-2 fw-bold lead text-primary">@Urls.Count(u => Math.Abs(u.PercentageChange) > 0)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light">
+                <h6 class="text-muted">Active URLs</h6>
+                <p class="fs-2 fw-bold lead text-success">@Urls.Count(u => u.IsHealthy)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light">
+                <h6 class="text-muted">Broken URLs</h6>
+                <p class="fs-2 fw-bold lead text-danger">@Urls.Count(u => !u.IsHealthy)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light">
+                <h6 class="text-muted">Significant Change</h6>
+                <p class="fs-2 fw-bold lead text-warning">@Urls.Count(u => Math.Abs(u.PercentageChange) > 10)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row mt-4">
+        <div class="col">
+            <label for="urlSearch" class="form-label">Search URL</label>
+            <input type="text" class="form-control" id="urlSearch" placeholder="Search by URL" @bind="SearchQuery" />
+        </div>
+
+        <div class="col">
+            <label for="urlFilter" class="form-label">Filter URLs</label>
+            <select class="form-select" id="urlFilter" @bind="SelectedFilter">
+                <option value="All">All</option>
+                <option value="Healthy">Active</option>
+                <option value="Broken">Broken</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <label for="sortBy" class="form-label">Sort By</label>
+            <select class="form-select" id="sortBy" @bind="CurrentSortColumn">
+                <option value="Url">URL</option>
+                <option value="SignificanceChange">Impact (%)</option>
+                <option value="LastScraped">Recency</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <label for="notificationFrequency" class="form-label">Customize Notification Frequency</label>
+            <select class="form-select" id="notificationFrequency" @bind="NotificationFrequency">
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Bi-Weekly">Bi-Weekly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+            <small class="form-text text-muted">Choose how frequently you'd like to receive notifications.</small>
+        </div>
+    </div>
+
+    <!-- Table Display -->
+    <table class="table table-bordered table-hover align-middle rounded shadow-sm">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th>URL</th>
+                <th>Status</th>
+                <th>Change (%)</th>
+                <th>Impact (%)</th>
+                <th>Last Scraped</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var urlData in PaginatedUrls)
+            {
+                <tr class="text-center">
+                    <td>
+                        <a href="@urlData.Url" target="_blank" class="text-decoration-none fw-bold"
+                            style="color: #007bff)">
+                            @urlData.Url
+                            <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </td>
+                    <td class="@(urlData.IsHealthy ? "text-success" : "text-danger")">@(urlData.IsHealthy ? "Active" : "Broken")</td>
+                    <td>@urlData.PercentageChange% </td>
+                    <td>@urlData.SignificanceChange% </td>
+                    <td>@urlData.LastScraped.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-center mt-2">
+        <button class="btn btn-primary" @onclick="GoToPreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
+        <span class="align-self-center mx-3">Page @CurrentPage of @TotalPages</span>
+        <button class="btn btn-primary" @onclick="GoToNextPage" disabled="@(!CanGoToNextPage)">Next</button>
+    </div>
+</div>
+
+@code {
+    private List<UrlData> Urls = new();
+    private string _searchQuery = string.Empty;
+    private string _selectedFilter = "All";
+    private string _currentSortColumn = "LastScraped";
+    private bool IsSortAscending = true;
+
+    private string SearchQuery
+    {
+        get => _searchQuery;
+        set
+        {
+            _searchQuery = value;
+            ApplyFiltersAndSorting();
+        }
+    }
+
+    private string SelectedFilter
+    {
+        get => _selectedFilter;
+        set
+        {
+            _selectedFilter = value;
+            ApplyFiltersAndSorting();
+        }
+    }
+
+    private string CurrentSortColumn
+    {
+        get => _currentSortColumn;
+        set
+        {
+            _currentSortColumn = value;
+            IsSortAscending = !IsSortAscending; // Toggle sorting order
+            ApplyFiltersAndSorting();
+        }
+    }
+
+    private List<UrlData> FilteredUrls = new();
+    private List<UrlData> PaginatedUrls = new();
+    private int ItemsPerPage = 10;
+    private int CurrentPage = 1;
+    private int TotalPages => (int)Math.Ceiling((double)FilteredUrls.Count / ItemsPerPage);
+    private bool CanGoToNextPage => CurrentPage < TotalPages;
+    private bool CanGoToPreviousPage => CurrentPage > 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        ApplyFiltersAndSorting();
+    }
+
+    private void ApplyFiltersAndSorting()
+    {
+        var filtered = Urls
+            .Where(u => string.IsNullOrEmpty(SearchQuery) || u.Url.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+            .Where(u =>
+                SelectedFilter == "All" ||
+                (SelectedFilter == "Healthy" && u.IsHealthy) ||
+                (SelectedFilter == "Broken" && !u.IsHealthy))
+            .ToList();
+
+        filtered = CurrentSortColumn switch
+        {
+            "Url" => IsSortAscending ? filtered.OrderBy(u => u.Url).ToList() : filtered.OrderByDescending(u => u.Url).ToList(),
+            "SignificanceChange" => IsSortAscending
+                ? filtered.OrderBy(u => u.SignificanceChange).ToList() 
+                : filtered.OrderByDescending(u => u.SignificanceChange).ToList(),
+            "LastScraped" => IsSortAscending 
+                ? filtered.OrderBy(u => u.LastScraped).ToList() 
+                : filtered.OrderByDescending(u => u.LastScraped).ToList(),
+            _ => filtered
+        };
+
+        FilteredUrls = filtered;
+        PaginateUrls();
+    }
+
+    private void PaginateUrls()
+    {
+        PaginatedUrls = FilteredUrls
+            .Skip((CurrentPage - 1) * ItemsPerPage)
+            .Take(ItemsPerPage)
+            .ToList();
+    }
+
+    private void GoToNextPage()
+    {
+        if (CanGoToNextPage)
+        {
+            CurrentPage++;
+            PaginateUrls();
+        }
+    }
+
+    private void GoToPreviousPage()
+    {
+        if (CanGoToPreviousPage)
+        {
+            CurrentPage--;
+            PaginateUrls();
+        }
+    }
+
+    private async Task LoadData()
+    {
+        await Task.Delay(500);
+        var random = new Random();
+        Urls = Enumerable.Range(1, 20).Select(i => new UrlData
+            {
+                Url = $"https://example{i}.com",
+                IsHealthy = random.NextDouble() * 100 < 50,
+                PercentageChange = Math.Round(random.NextDouble() * 100, 1),
+                SignificanceChange = Math.Round(random.NextDouble() * 100, 1),
+                LastScraped = DateTime.Now.AddMinutes(-random.Next(1, 120)),
+            }).ToList();
+    }
+
+    private string NotificationFrequency { get; set; } = "Daily";
+}

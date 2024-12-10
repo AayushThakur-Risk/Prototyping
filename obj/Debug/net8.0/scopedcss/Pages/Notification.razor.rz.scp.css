@@ -1,0 +1,40 @@
+/* Styling for search input box */
+.mb-3[b-puoo0kuo7d] {
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.form-control[b-puoo0kuo7d] {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Optional: Card-like appearance for the table */
+.table-wrapper .table-responsive[b-puoo0kuo7d] {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for row highlight */
+.table-hover tbody tr:hover[b-puoo0kuo7d] {
+    background-color: #f1f1f1;
+}
+
+/* Ellipsis text styling on table cells for truncated URLs */
+.text-truncate[b-puoo0kuo7d] {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sticky-header[b-puoo0kuo7d] {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white; /* To avoid background transparency issues */
+}
+

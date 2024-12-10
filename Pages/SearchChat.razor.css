@@ -1,0 +1,206 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 90vh;
+    margin: auto;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background-color: #f4f6f8;
+}
+
+.chat-message {
+    padding: 2vh 1vw;
+    border-radius: 8px;
+    word-wrap: break-word;
+    background-color: #fff;
+    max-width: 75vw;
+    margin-bottom: 2vh;
+    color: #888;
+}
+
+.user-message {
+    justify-self: end;
+}
+
+.bot-message {
+    justify-self: start;
+}
+
+/* Flexbox styling for the source card container */
+.sources-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    width: 15vw;
+    height: 10vh;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ensure title or URL text doesn't overflow and adds ellipses */
+.card-title a,
+.source-url {
+    color: #888;
+    text-decoration: none;
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    overflow: hidden;    /* Hide any overflow text */
+    text-overflow: ellipsis; /* Add ellipses when text overflows */
+    display: block;      /* Ensure it's a block element to allow ellipsis to work */
+}
+
+/* Hover effect for the link */
+.card-title a:hover {
+    text-decoration: underline;
+}
+
+/* Ensure the source URL doesn't overflow */
+.source-url {
+    max-width: 60%;
+}
+
+/* Placeholder styling for missing images */
+.card-body i.bi-image {
+    font-size: 2rem;
+    color: #ccc;
+}
+
+/* Adjustments for the container and overall chat message styling */
+.chat-container {
+    padding: 20px;
+}
+
+.chat-body {
+    margin-bottom: 20px;
+}
+
+.answer-section {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #333;
+}
+
+.chat-input-container {
+    display: flex;
+    border-top: 1px solid #ddd;
+    padding: 8px;
+    background-color: #ffffff;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: none; 
+}
+
+.send-button {
+    margin-left: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
+}
+
+.typing-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px;
+    background-color: #007bff;
+    border-radius: 50%;
+    animation: typing 1.5s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes typing {
+    0%, 100% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.source-title {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.source-title:hover {
+    text-decoration: underline;
+}
+
+.source-image {
+    width: 50px;
+    height: auto;
+    margin-top: 5px;
+}
+
+.response-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.share-button, .like-button, .dislike-button {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.like-dislike button {
+    margin-left: 10px;
+}
+
+.custom-textarea {
+    resize: none; 
+}

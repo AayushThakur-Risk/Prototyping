@@ -1,0 +1,23 @@
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Table row hover effect */
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* URL styling for visibility */
+a.text-primary {
+    color: #007bff; /* Blue for visibility */
+}
+a.text-primary:hover {
+    text-decoration: underline;
+}
+
+/* Adjust icon size and alignment */
+.bi-check-circle-fill,
+.bi-x-circle-fill {
+    font-size: 1.2rem; /* Larger size for better visibility */
+    vertical-align: middle;
+}

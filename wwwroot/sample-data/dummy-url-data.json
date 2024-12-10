@@ -1,0 +1,329 @@
+[
+    {
+        "Url": "https://example1.com",
+        "IsHealthy": true,
+        "PercentageChange": 45.2,
+        "SignificanceChange": 23.8,
+        "LastScraped": "2024-11-20T12:30:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example1" },
+            { "Title": "Body", "Content": "Body content for example1" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example2.com",
+        "IsHealthy": false,
+        "PercentageChange": 12.5,
+        "SignificanceChange": 48.6,
+        "LastScraped": "2024-11-19T10:15:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example2" },
+            { "Title": "Footer", "Content": "Footer content for example2" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example3.com",
+        "IsHealthy": true,
+        "PercentageChange": 73.4,
+        "SignificanceChange": 56.1,
+        "LastScraped": "2024-11-18T16:00:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example3" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example4.com",
+        "IsHealthy": false,
+        "PercentageChange": 34.7,
+        "SignificanceChange": 91.2,
+        "LastScraped": "2024-11-21T09:00:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example4" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example5.com",
+        "IsHealthy": true,
+        "PercentageChange": 27.3,
+        "SignificanceChange": 19.9,
+        "LastScraped": "2024-11-20T14:45:00",
+        "Sections": [],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example6.com",
+        "IsHealthy": false,
+        "PercentageChange": 85.1,
+        "SignificanceChange": 60.5,
+        "LastScraped": "2024-11-19T08:22:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example6" },
+            { "Title": "Body", "Content": "Body content for example6" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example7.com",
+        "IsHealthy": true,
+        "PercentageChange": 59.3,
+        "SignificanceChange": 40.1,
+        "LastScraped": "2024-11-18T11:40:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example7" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example8.com",
+        "IsHealthy": true,
+        "PercentageChange": 15.8,
+        "SignificanceChange": 23.4,
+        "LastScraped": "2024-11-20T16:12:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example8" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example9.com",
+        "IsHealthy": false,
+        "PercentageChange": 47.2,
+        "SignificanceChange": 53.9,
+        "LastScraped": "2024-11-21T17:01:00",
+        "Sections": [
+            { "Title": "Footer", "Content": "Footer content for example9" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example10.com",
+        "IsHealthy": true,
+        "PercentageChange": 77.6,
+        "SignificanceChange": 61.7,
+        "LastScraped": "2024-11-19T12:02:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example10" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example11.com",
+        "IsHealthy": false,
+        "PercentageChange": 19.3,
+        "SignificanceChange": 12.8,
+        "LastScraped": "2024-11-21T09:00:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example11" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example12.com",
+        "IsHealthy": true,
+        "PercentageChange": 66.5,
+        "SignificanceChange": 37.9,
+        "LastScraped": "2024-11-17T14:30:00",
+        "Sections": [],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example13.com",
+        "IsHealthy": false,
+        "PercentageChange": 10.0,
+        "SignificanceChange": 33.3,
+        "LastScraped": "2024-11-20T13:50:00",
+        "Sections": [
+            { "Title": "Footer", "Content": "Footer content for example13" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example14.com",
+        "IsHealthy": true,
+        "PercentageChange": 53.0,
+        "SignificanceChange": 43.8,
+        "LastScraped": "2024-11-18T09:00:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example14" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example15.com",
+        "IsHealthy": false,
+        "PercentageChange": 38.2,
+        "SignificanceChange": 25.4,
+        "LastScraped": "2024-11-20T08:30:00",
+        "Sections": [
+            { "Title": "Footer", "Content": "Footer content for example15" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example16.com",
+        "IsHealthy": true,
+        "PercentageChange": 22.6,
+        "SignificanceChange": 31.0,
+        "LastScraped": "2024-11-19T11:00:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example16" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example17.com",
+        "IsHealthy": true,
+        "PercentageChange": 67.8,
+        "SignificanceChange": 72.3,
+        "LastScraped": "2024-11-18T17:15:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example17" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example18.com",
+        "IsHealthy": false,
+        "PercentageChange": 42.9,
+        "SignificanceChange": 58.0,
+        "LastScraped": "2024-11-17T15:00:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example18" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example19.com",
+        "IsHealthy": true,
+        "PercentageChange": 35.0,
+        "SignificanceChange": 44.4,
+        "LastScraped": "2024-11-21T10:00:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example19" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example20.com",
+        "IsHealthy": false,
+        "PercentageChange": 18.9,
+        "SignificanceChange": 12.2,
+        "LastScraped": "2024-11-19T14:30:00",
+        "Sections": [
+            { "Title": "Footer", "Content": "Footer content for example20" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example21.com",
+        "IsHealthy": true,
+        "PercentageChange": 91.2,
+        "SignificanceChange": 84.7,
+        "LastScraped": "2024-11-20T13:15:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example21" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example22.com",
+        "IsHealthy": false,
+        "PercentageChange": 24.5,
+        "SignificanceChange": 18.7,
+        "LastScraped": "2024-11-18T15:20:00",
+        "Sections": [],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example23.com",
+        "IsHealthy": true,
+        "PercentageChange": 50.6,
+        "SignificanceChange": 38.9,
+        "LastScraped": "2024-11-20T17:00:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example23" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example24.com",
+        "IsHealthy": false,
+        "PercentageChange": 13.7,
+        "SignificanceChange": 29.2,
+        "LastScraped": "2024-11-19T13:00:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example24" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example25.com",
+        "IsHealthy": true,
+        "PercentageChange": 34.9,
+        "SignificanceChange": 40.3,
+        "LastScraped": "2024-11-18T09:50:00",
+        "Sections": [
+            { "Title": "Header", "Content": "Header content for example25" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example26.com",
+        "IsHealthy": false,
+        "PercentageChange": 58.4,
+        "SignificanceChange": 43.5,
+        "LastScraped": "2024-11-17T18:30:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example26" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example27.com",
+        "IsHealthy": true,
+        "PercentageChange": 72.3,
+        "SignificanceChange": 53.7,
+        "LastScraped": "2024-11-19T12:40:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example27" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example28.com",
+        "IsHealthy": false,
+        "PercentageChange": 65.1,
+        "SignificanceChange": 60.3,
+        "LastScraped": "2024-11-21T11:20:00",
+        "Sections": [
+            { "Title": "Footer", "Content": "Footer content for example28" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example29.com",
+        "IsHealthy": true,
+        "PercentageChange": 28.9,
+        "SignificanceChange": 48.1,
+        "LastScraped": "2024-11-20T15:15:00",
+        "Sections": [
+            { "Title": "Overview", "Content": "Overview content for example29" }
+        ],
+        "IsExpanded": false
+    },
+    {
+        "Url": "https://example30.com",
+        "IsHealthy": false,
+        "PercentageChange": 37.3,
+        "SignificanceChange": 31.6,
+        "LastScraped": "2024-11-17T17:45:00",
+        "Sections": [
+            { "Title": "Body", "Content": "Body content for example30" }
+        ],
+        "IsExpanded": false
+    }
+]

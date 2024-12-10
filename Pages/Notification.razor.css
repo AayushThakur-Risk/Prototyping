@@ -1,0 +1,40 @@
+/* Styling for search input box */
+.mb-3 {
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Optional: Card-like appearance for the table */
+.table-wrapper .table-responsive {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for row highlight */
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ellipsis text styling on table cells for truncated URLs */
+.text-truncate {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white; /* To avoid background transparency issues */
+}
+

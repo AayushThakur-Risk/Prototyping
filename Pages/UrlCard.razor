@@ -1,0 +1,129 @@
+@code {
+    [Parameter] public required string Url { get; set; }
+    [Parameter] public required string Title { get; set; }
+    [Parameter] public required string IconUrl { get; set; }
+    [Parameter] public required string Category { get; set; }
+    [Parameter] public required string CategoryColor { get; set; }
+    [Parameter] public required string Summary { get; set; }
+    [Parameter] public required string PageType { get; set; }
+
+    private bool isAccepted = false;
+    private bool isRejected = false;
+    private string comments = string.Empty;
+
+    private void OnAcceptChanged(ChangeEventArgs e)
+    {
+        isAccepted = (bool)e.Value;
+        isRejected = false; // Uncheck reject if accept is checked
+    }
+
+    private void OnRejectChanged(ChangeEventArgs e)
+    {
+        isRejected = (bool)e.Value;
+        isAccepted = false; // Uncheck accept if reject is checked
+    }
+
+    private bool IsSubmitEnabled => !string.IsNullOrEmpty(comments);
+}
+
+<style>
+    .list-group-item {
+        border: none;
+    }
+
+    .checkbox-container {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        accent-color: #007bff;
+    }
+
+    .checkbox-container label {
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .textarea-container {
+        margin-top: 0.5rem;
+    }
+
+    .textarea-container textarea {
+        width: 100%;
+    }
+
+    .submit-button-container {
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="list-group-item bg-light">
+    <div class="card border-0 shadow-sm p-4 mb-4">
+        <!-- Title and Icon Section -->
+        <div class="d-flex align-items-start">
+            <div class="flex-grow-1">
+                <a href="@Url" class="text-primary fw-bold h5" target="_blank">
+                    @Title
+                </a>
+                <p class="text-muted my-2" style="font-size: 0.9rem;">@Summary</p>
+            </div>
+            <div>
+                @if (string.IsNullOrEmpty(IconUrl))
+                {
+                    <!-- Bootstrap icon placeholder if IconUrl is empty -->
+                    <i class="bi bi-card-image" style="width: 50px; height: 50px; font-size: 50px; color: #ccc;"></i>
+                }
+                else
+                {
+                    <!-- Image from IconUrl -->
+                    <img src="@IconUrl" class="rounded" style="width: 50px; height: 50px; object-fit: cover;" />
+                }
+            </div>
+        </div>
+
+        <div class="mt-2 d-flex">
+            <span class="me-2 text-muted">Url: </span>
+            <a href="@Url" class="text-dark text-decoration-none d-flex align-items-center me-3" target="_blank">
+                <i class="bi bi-link-45deg me-1"></i>@Url
+            </a>
+        </div>
+
+        <div class="mt-2 text-muted">
+            <span class="me-2">Tags: </span>
+            <!-- Category Badge -->
+            <span class="bg-light me-2 px-2 py-1 border rounded" style="font-size: 0.8rem">
+                @Category
+            </span>
+
+            <!-- Page Type Badge -->
+            <span class="bg-light me-2 px-2 py-1 border rounded" style="font-size: 0.8rem">
+                @PageType
+            </span>
+        </div>
+
+        <!-- Accept / Reject Section -->
+        <div class="checkbox-container mt-3">
+            <div>
+                <input type="checkbox" id="acceptCheckbox" checked="@isAccepted" @onchange="OnAcceptChanged" />
+                <label for="acceptCheckbox" class="text-success">Accept</label>
+            </div>
+            <div>
+                <input type="checkbox" id="rejectCheckbox" checked="@isRejected" @onchange="OnRejectChanged" />
+                <label for="rejectCheckbox" class="text-danger">Reject</label>
+            </div>
+        </div>
+
+        <!-- Comments Textarea (shown if accepted or rejected) -->
+        @if (isAccepted || isRejected)
+        {
+            <div class="textarea-container mt-3">
+                <textarea class="form-control" placeholder="Add your comments here..." @bind="comments"></textarea>
+            </div>
+            <!-- Submit Button -->
+            <div class="submit-button-container">
+                <button class="btn btn-primary mt-2" disabled="@(string.IsNullOrEmpty(comments))">Submit</button>
+            </div>
+        }
+    </div>
+</div>
