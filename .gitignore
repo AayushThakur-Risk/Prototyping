@@ -1,0 +1,12 @@
+# Ignore the entire bin folder
+bin/
+
+# Ignore obj/Debug folder
+obj/Debug/
+
+# Ignore bin/Debug folder
+bin/Debug/
+
+# Ignore specific folder under bin (optional if above is working)
+bin/Debug/net8.0/
+
