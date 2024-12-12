@@ -1,0 +1,203 @@
+@page "/notifier"
+@* Link the external CSS file here *@
+<link href="Pages/components/Notifier/Notifier.css" rel="stylesheet" />
+
+<div class="container mt-2 mb-5 px-5 pb-2">
+    <!-- Overview Section as Tiles -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light cursor-pointer"
+                @onclick="() => TilesClick('A')">
+                <h6 class="text-muted">Total URLs</h6>
+                <p class="fs-2 fw-bold lead text-primary">@Urls.Count</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light cursor-pointer"
+                @onclick="() => TilesClick('C')">
+                <h6 class="text-muted">Changed URLs</h6>
+                <p class="fs-2 fw-bold lead text-primary">@Urls.Count(u => Math.Abs(u.PercentageChange) > 0)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light cursor-pointer"
+                @onclick="() => TilesClick('H')">
+                <h6 class="text-muted">Active URLs</h6>
+                <p class="fs-2 fw-bold lead text-success">@Urls.Count(u => u.IsHealthy)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light cursor-pointer"
+                @onclick="() => TilesClick('B')">
+                <h6 class="text-muted">Broken URLs</h6>
+                <p class="fs-2 fw-bold lead text-danger">@Urls.Count(u => !u.IsHealthy)</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="tile p-3 bg-white shadow rounded border border-light cursor-pointer"
+                @onclick="() => TilesClick('S')">
+                <h6 class="text-muted">Significant Change</h6>
+                <p class="fs-2 fw-bold lead text-warning">@Urls.Count(u => Math.Abs(u.PercentageChange) > 10)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row mt-4">
+        <div class="col">
+            <label for="urlSearch" class="form-label">Search URL</label>
+            <input type="text" class="form-control" id="urlSearch" placeholder="Search by URL" @bind="SearchQuery" />
+        </div>
+
+        <div class="col">
+            <label for="urlFilter" class="form-label">Filter URLs</label>
+            <select class="form-select" id="urlFilter" @bind="SelectedFilter">
+                <option value="All">All</option>
+                <option value="Healthy">Active</option>
+                <option value="Broken">Broken</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <label for="sortBy" class="form-label">Sort By</label>
+            <select class="form-select" id="sortBy" @bind="CurrentSortColumn">
+                <option value="Url">URL</option>
+                <option value="SignificanceChange">Impact (%)</option>
+                <option value="LastScraped">Recency</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <label for="notificationFrequency" class="form-label">Customize Notification Frequency</label>
+            <select class="form-select" id="notificationFrequency" @bind="NotificationFrequency">
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Bi-Weekly">Bi-Weekly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+            <small class="form-text text-muted">Choose how frequently you'd like to receive notifications.</small>
+        </div>
+    </div>
+
+    <!-- Table Display -->
+    @* <table class="table table-bordered table-hover align-middle rounded shadow-sm">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th>URL</th>
+                <th>Status</th>
+                <th>Change (%)</th>
+                <th>Impact (%)</th>
+                <th>Last Scraped</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var urlData in PaginatedUrls)
+            {
+                <tr class="text-center">
+                    <td>
+                        <a href="@urlData.Url" target="_blank" class="text-decoration-none fw-bold"
+                            style="color: #007bff)">
+                            @urlData.Url
+                            <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </td>
+                    <td class="@(urlData.IsHealthy ? "text-success" : "text-danger")">@(urlData.IsHealthy ? "Active" : "Broken")</td>
+                    <td>@urlData.PercentageChange% </td>
+                    <td>@urlData.SignificanceChange% </td>
+                    <td>@urlData.LastScraped.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table> *@
+    <table class="table table-bordered table-hover align-middle rounded shadow-sm">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th>URL</th>
+                <th>Status</th>
+                <th>Change (%)</th>
+                <th>Impact (%)</th>
+                <th>Last Scraped</th>
+                <th>Details</th> <!-- New column for details button -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var urlData in PaginatedUrls)
+            {
+                <tr class="text-center">
+                    <td>
+                        <a href="@urlData.Url" target="_blank" class="text-decoration-none fw-bold" style="color: #007bff;">
+                            @urlData.Url
+                            <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </td>
+                    <td class="@(urlData.IsHealthy ? "text-success" : "text-danger")">
+                        @(urlData.IsHealthy ? "Active" : "Broken")
+                    </td>
+                    <td>@urlData.PercentageChange% </td>
+                    <td>@urlData.SignificanceChange% </td>
+                    <td>@urlData.LastScraped.ToString("g")</td>
+                    <td>
+                        <!-- Button to toggle expanded state -->
+                        <button class="btn btn-info btn-sm" @onclick="() => ToggleExpand(urlData)">
+                            @if (urlData.IsExpanded)
+                            {
+                                <span>Collapse</span>
+                            }
+                            else
+                            {
+                                <span>Expand</span>
+                            }
+                        </button>
+                    </td>
+                </tr>
+
+                @if (urlData.IsExpanded)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <!-- Expanded content for the row -->
+                            <div>
+                                <h5>Sections</h5>
+                                <ul>
+                                    @foreach (var sec in urlData.Sections)
+                                    {
+                                        <li>
+                                            <strong>@sec.SectionName:</strong>
+
+                                            <!-- Display previous, current, and percentage with highlights -->
+                                            <div class="highlight-section">
+                                                <span>Previous Value:</span>
+                                                <span class="highlight-value previous">@sec.PreviousValue</span>
+                                                <span class="highlight-value align-right percentage @(sec.PercentageChange <= 50 ? "percentage-yellow" : "percentage-red")">
+                                                    @sec.PercentageChange% Changes
+                                                </span>
+                                            </div>
+                                            <div class="highlight-section">
+                                                <span>Current Value:</span>
+                                                <span class="highlight-value current">@sec.CurrentValue</span>
+                                            </div>
+                                            @* <div class="highlight-section align-right">
+                                                <span class="highlight-value percentage @(sec.PercentageChange <= 50 ? "percentage-yellow" : "percentage-red")">
+                                                    @sec.PercentageChange% Change
+                                                </span>
+                                            </div> *@
+
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-center mt-2">
+        <button class="btn btn-primary" @onclick="GoToPreviousPage" disabled="@(!CanGoToPreviousPage)">Previous</button>
+        <span class="align-self-center mx-3">Page @CurrentPage of @TotalPages</span>
+        <button class="btn btn-primary" @onclick="GoToNextPage" disabled="@(!CanGoToNextPage)">Next</button>
+    </div>
+</div>

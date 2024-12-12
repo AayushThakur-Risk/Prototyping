@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace MyBlazorWasmApp.Pages
+namespace MyBlazorWasmApp.Pages.components.Count
 {
     public partial class Count
     {
