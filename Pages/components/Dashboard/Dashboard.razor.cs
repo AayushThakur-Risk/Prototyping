@@ -23,7 +23,8 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         private List<UrlData> urlDataList = new List<UrlData>();
         private List<UrlData> filteredData = new List<UrlData>();
         private List<UrlData> pagedData = new List<UrlData>();
-
+        private DashboardData dashboardData = new DashboardData();
+        private Cards cards = new Cards();
         private string searchTerm = "";
         private string healthFilter = "";
         private int currentPage = 1;
@@ -50,6 +51,13 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
             urlDataList = await Http.GetFromJsonAsync<List<UrlData>>(
                 "sample-data/dummy-url-data.json"
             );
+
+            dashboardData = await Http.GetFromJsonAsync<DashboardData>(
+                "sample-data/dashboard-data.json"
+            );
+
+            cards = dashboardData?.cards;
+
             ApplyFilters();
             UpdatePagedData();
         }

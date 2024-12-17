@@ -1,9 +1,12 @@
 .dashboard-container {
     display: flex;
-    justify-content: space-between; /* Ensures one div is on the left, the other on the right */
-    align-items: center; /* Vertically aligns items */
-    height: 37vh; /* Optional: Full-height container */
-    padding: 0 20px; /* Adds some spacing on the sides */
+    justify-content: space-between;
+    /* Ensures one div is on the left, the other on the right */
+    align-items: center;
+    /* Vertically aligns items */
+    height: 33vh;
+    /* Optional: Full-height container */
+    /* Adds some spacing on the sides */
 }
 
 .left {
@@ -16,7 +19,7 @@
     /* flex-direction: column; */
 }
 
-.duration-selection{
+.duration-selection {
     margin-right: 5px;
 }
 
@@ -34,26 +37,100 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #64748145; /* Professional gray shade */
+    background-color: #64748145;
+    /* Professional gray shade */
     color: rgb(30, 27, 27);
     padding: 6px 15px;
     border-radius: 5px;
     text-decoration: none;
     cursor: pointer;
-    white-space: nowrap; /* Prevent text wrapping */
-    transition: background-color 0.3s ease; /* Smooth hover transition */
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    transition: background-color 0.3s ease;
+    /* Smooth hover transition */
     font-weight: 500;
 }
 
 /* Hover effect */
 .export-icon:hover {
-    background-color: #5a626868; /* Darker gray for hover */
+    background-color: #5a626868;
+    /* Darker gray for hover */
 }
 
-.cards{
-    border: 1px solid #64748145;
-    border-radius: 10px;
+.cards {
+    /* border: 1px solid #64748145; */
+    /* border-radius: 10px; */
     text-align: left;
     padding-left: 1rem;
     padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.card-counter {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.all-count {
+    background-color: #ffffff; /* Light grey */
+    border: 1px solid #5c5c5c; /* Darker grey border */
+    color: #5c5c5c; /* Text color matches border */
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Online State */
+.online {
+    background-color: #f0fbf3; /* Light green */
+    border: 1px solid #437b5b; /* Darker green border */
+    color: #437b5b; /* Text color matches border */
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Offline State */
+.offline {
+    background-color: #fff2f2; /* Light red */
+    border: 1px solid #c83d3b; /* Dark red border */
+    border-radius: 10px;
+    color: #c83d3b; /* Text color matches border */
+}
+
+/* Error State */
+.error {
+    background-color: #fefce5; /* Light yellow */
+    border: 1px solid #b6ae81; /* Medium yellow border */
+    border-radius: 10px;
+    color: #b6ae81; /* Text color matches border */
+}
+
+.toggle {
+    border: 1px solid rgb(196, 196, 196);
+    background-color: rgb(237, 237, 237);
+    border-radius: 7px;
+}
+
+.view-toggle {
+    padding: 5px 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.view-toggle:hover {
+    background-color: #ffffff; /* Lighter grey on hover */
+    margin: 7px;
+}
+
+.view-toggle i {
+    font-size: 20px; /* Icon size */
 }
