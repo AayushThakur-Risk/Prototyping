@@ -13,9 +13,89 @@
 </div> *@
 
 <!-- Manage Menu Component -->
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="courtSearch">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Court Search
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="notification">
+                <span class="bi bi-bell-fill" aria-hidden="true"></span> Notification
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="urlchangenotifier">
+                <span class="bi bi-bell-fill" aria-hidden="true"></span> Change Notifier
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="searchChat">
+                <span class="bi bi-search" aria-hidden="true"></span> Search
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+
 <DomainMenuManage MenuItems="@MenuItems" OnMenuItemsChanged="UpdateMenuItems" />
-
-
+<div class="nav-item px-3 nav-top">
+    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Dashboard
+    </NavLink>
+</div>
+@* <div class="nav-item px-3">
+    <NavLink class="nav-link" href="counter">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+    </NavLink>
+</div> *@
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="weather">
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="courtSearch">
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Court Search
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notification">
+        <span class="bi bi-bell-fill" aria-hidden="true"></span> Notification
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="urlchangenotifier">
+        <span class="bi bi-bell-fill" aria-hidden="true"></span> Change Notifier
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="searchChat">
+        <span class="bi bi-search" aria-hidden="true"></span> Search
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notifier">
+        <span class="bi bi-bell-fill" aria-hidden="true"></span> Notifier
+    </NavLink>
+</div>
 
 @foreach (var item in MenuItems)
 {
@@ -50,7 +130,6 @@
     private bool isModalVisible = false;
     private List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     private MenuItem? selectedMenuItem;
-
     private void ShowAddMenuModal()
     {
         selectedMenuItem = null;  // No menu selected for Add
