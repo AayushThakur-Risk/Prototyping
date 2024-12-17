@@ -1,0 +1,40 @@
+@page "/mapView"
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+
+<h3>Website Monitoring - Map View</h3>
+<div id="map-container" style="width:960px; height:600px; margin:auto;"></div>
+
+@code {
+    private string mapContainerId = "#map-container";
+    private object? jsonData;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                // Fetch JSON data from dashboard_data.json
+                jsonData = await Http.GetFromJsonAsync<object>("sample-data/dashboard_data.json");
+
+                // Check if jsonData is null or invalid
+                if (jsonData != null)
+                {
+                    // Pass the JSON data to the renderUSMap JS function
+                    await JSRuntime.InvokeVoidAsync("renderUSMap", mapContainerId, jsonData);
+                    Console.WriteLine("US Map initialized successfully");
+                }
+                else
+                {
+                    Console.WriteLine("Error: JSON data is null or invalid.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading US Map: {ex.Message}");
+            }
+        }
+    }
+}

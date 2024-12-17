@@ -1,0 +1,182 @@
+{
+    "cards": {
+      "total": 1000,
+      "online": 850,
+      "errors": 75,
+      "offline": 75
+    },
+    "mapData": [
+      {
+        "state": "California",
+        "totalUrls": 250,
+        "errors": 20,
+        "offline": 10,
+        "online": 220
+      },
+      {
+        "state": "Texas",
+        "totalUrls": 180,
+        "errors": 15,
+        "offline": 8,
+        "online": 157
+      },
+      {
+        "state": "New York",
+        "totalUrls": 150,
+        "errors": 10,
+        "offline": 12,
+        "online": 128
+      },
+      {
+        "state": "Florida",
+        "totalUrls": 120,
+        "errors": 8,
+        "offline": 5,
+        "online": 107
+      },
+      {
+        "state": "Illinois",
+        "totalUrls": 100,
+        "errors": 7,
+        "offline": 6,
+        "online": 87
+      },
+      {
+        "state": "Ohio",
+        "totalUrls": 90,
+        "errors": 5,
+        "offline": 3,
+        "online": 82
+      },
+      {
+        "state": "Georgia",
+        "totalUrls": 85,
+        "errors": 6,
+        "offline": 4,
+        "online": 75
+      },
+      {
+        "state": "North Carolina",
+        "totalUrls": 80,
+        "errors": 4,
+        "offline": 2,
+        "online": 74
+      },
+      {
+        "state": "Michigan",
+        "totalUrls": 70,
+        "errors": 3,
+        "offline": 2,
+        "online": 65
+      },
+      {
+        "state": "Arizona",
+        "totalUrls": 65,
+        "errors": 4,
+        "offline": 1,
+        "online": 60
+      },
+      {
+        "state": "Washington",
+        "totalUrls": 60,
+        "errors": 2,
+        "offline": 1,
+        "online": 57
+      },
+      {
+        "state": "Pennsylvania",
+        "totalUrls": 75,
+        "errors": 5,
+        "offline": 3,
+        "online": 67
+      }
+    ],
+    "tablePagination": {
+      "totalRows": 100,
+      "rowsPerPage": 10,
+      "currentPage": 1
+    },
+    "tableData": [
+      {
+        "url": "https://example1.com",
+        "state": "California",
+        "status": "Online",
+        "priority": "High",
+        "lastCheckStatus": "200",
+        "lastUpdated": "2024-06-17T12:45:00Z"
+      },
+      {
+        "url": "https://example2.com",
+        "state": "Texas",
+        "status": "Offline",
+        "priority": "Medium",
+        "lastCheckStatus": "500",
+        "lastUpdated": "2024-06-17T12:40:00Z"
+      },
+      {
+        "url": "https://example3.com",
+        "state": "New York",
+        "status": "Error",
+        "priority": "High",
+        "lastCheckStatus": "404",
+        "lastUpdated": "2024-06-17T12:50:00Z"
+      },
+      {
+        "url": "https://example4.com",
+        "state": "Florida",
+        "status": "Online",
+        "priority": "Low",
+        "lastCheckStatus": "200",
+        "lastUpdated": "2024-06-17T12:48:00Z"
+      },
+      {
+        "url": "https://example5.com",
+        "state": "Illinois",
+        "status": "Online",
+        "priority": "Medium",
+        "lastCheckStatus": "200",
+        "lastUpdated": "2024-06-17T12:42:00Z"
+      },
+      {
+        "url": "https://example6.com",
+        "state": "Texas",
+        "status": "Error",
+        "priority": "High",
+        "lastCheckStatus": "503",
+        "lastUpdated": "2024-06-17T12:41:00Z"
+      },
+      {
+        "url": "https://example7.com",
+        "state": "California",
+        "status": "Offline",
+        "priority": "High",
+        "lastCheckStatus": "Timeout",
+        "lastUpdated": "2024-06-17T12:39:00Z"
+      },
+      {
+        "url": "https://example8.com",
+        "state": "Ohio",
+        "status": "Online",
+        "priority": "Low",
+        "lastCheckStatus": "200",
+        "lastUpdated": "2024-06-17T12:30:00Z"
+      },
+      {
+        "url": "https://example9.com",
+        "state": "Georgia",
+        "status": "Online",
+        "priority": "Medium",
+        "lastCheckStatus": "200",
+        "lastUpdated": "2024-06-17T12:35:00Z"
+      },
+      {
+        "url": "https://example10.com",
+        "state": "North Carolina",
+        "status": "Error",
+        "priority": "High",
+        "lastCheckStatus": "400",
+        "lastUpdated": "2024-06-17T12:37:00Z"
+      }
+    ]
+  }
+  
