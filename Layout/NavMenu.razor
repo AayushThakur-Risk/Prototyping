@@ -1,77 +1,54 @@
 ﻿@page "/navmenu"
 @using MyBlazorWasmApp.Models
+@using static System.Net.WebRequestMethods
+@inject HttpClient Http
 
-@* <button class="btn btn-primary" @onclick="ShowAddMenuModal">Add Menu</button>
+@* Add Dynamic Domain *@
+@* <DomainMenuManage MenuItems="@MenuItems" OnMenuItemsChanged="UpdateMenuItems" /> *@
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">MyBlazorWasmApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div> *@
-
-<!-- Manage Menu Component -->
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="courtSearch">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Court Search
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="notification">
-                <span class="bi bi-bell-fill" aria-hidden="true"></span> Notification
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="urlchangenotifier">
-                <span class="bi bi-bell-fill" aria-hidden="true"></span> Change Notifier
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="searchChat">
-                <span class="bi bi-search" aria-hidden="true"></span> Search
-            </NavLink>
-        </div>
-    </nav>
+@*
+<div class="nav-label">
+    Navigations
 </div>
-
-
-<DomainMenuManage MenuItems="@MenuItems" OnMenuItemsChanged="UpdateMenuItems" />
-<div class="nav-item px-3 nav-top">
+<div class="nav-item px-3 ">
     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Dashboard
+        <span class="bi bi-xbox bi-icon" aria-hidden="true"></span> Dashboard
     </NavLink>
 </div>
-@* <div class="nav-item px-3">
-    <NavLink class="nav-link" href="counter">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-    </NavLink>
-</div> *@
 <div class="nav-item px-3">
     <NavLink class="nav-link" href="weather">
-        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+        <span class="bi bi-browser-edge bi-icon" aria-hidden="true"></span> WebSites
     </NavLink>
 </div>
 <div class="nav-item px-3">
+    <NavLink class="nav-link" href="weather">
+        <span class="bi bi-activity bi-icon" aria-hidden="true"></span> Activities
+    </NavLink>
+</div>
+<div class="nav-label">
+    Ai Features
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notifier">
+        <span class="bi bi-unity bi-icon" aria-hidden="true"></span> Ai Analysis
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notifier">
+        <span class="bi bi-steam bi-icon" aria-hidden="true"></span> Auto Monitoring
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notifier">
+        <span class="bi bi-search" aria-hidden="true"></span> URL Discovery
+    </NavLink>
+</div>
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="notifier">
+        <span class="bi bi-stack bi-icon" aria-hidden="true"></span> Advanced Tools
+    </NavLink>
+</div> *@
+@* <div class="nav-item px-3">
     <NavLink class="nav-link" href="courtSearch">
         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Court Search
     </NavLink>
@@ -80,7 +57,7 @@
     <NavLink class="nav-link" href="notification">
         <span class="bi bi-bell-fill" aria-hidden="true"></span> Notification
     </NavLink>
-</div>
+</div> 
 <div class="nav-item px-3">
     <NavLink class="nav-link" href="urlchangenotifier">
         <span class="bi bi-bell-fill" aria-hidden="true"></span> Change Notifier
@@ -91,11 +68,12 @@
         <span class="bi bi-search" aria-hidden="true"></span> Search
     </NavLink>
 </div>
+    using System.Runtime.CompilerServices;
 <div class="nav-item px-3">
     <NavLink class="nav-link" href="notifier">
         <span class="bi bi-bell-fill" aria-hidden="true"></span> Notifier
     </NavLink>
-</div>
+</div> *@
 
 @foreach (var item in MenuItems)
 {
@@ -109,13 +87,38 @@
             <div class="sub-menu">
                 @foreach (var subMenu in item.SubMenus)
                 {
-                    <NavLink class="nav-link" href="@subMenu.Url">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @subMenu.Title
+                    <NavLink class="nav-link" href="@subMenu?.Url">
+                        <span class="@subMenu?.Icon" aria-hidden="true"></span> @subMenu?.Title
                     </NavLink>
                 }
             </div>
         }
     </div>
+}
+
+<div class="nav-item px-3">
+    <NavLink class="nav-link">
+        <span class="side-head-label">Court Monitor</span> 
+    </NavLink>
+</div>
+@foreach (var data in menuDataList)
+{
+    @if (data.Menus?.Any() == true)
+    {
+        <div class="nav-label">
+            @data?.NavLabel
+        </div>
+        @* <div class="sub-menu"> *@
+            @foreach (var menu in data?.Menus)
+            {
+                <div class="nav-item px-3 ">
+                    <NavLink class="nav-link" href="@menu?.Url" Match="NavLinkMatch.All">
+                        <span class="@menu?.Icon" aria-hidden="true"></span> @menu?.Title
+                    </NavLink>
+                </div>
+            }
+        @* </div> *@
+    }
 }
 
 @code {
@@ -181,5 +184,12 @@
     {
         MenuItems = updatedMenuItems;
         StateHasChanged();
+    }
+
+    // Load the initial data asynchronously
+    private List<MenuConfig> menuDataList = new List<MenuConfig>();
+    protected override async Task OnInitializedAsync()
+    {
+        menuDataList = await Http.GetFromJsonAsync<List<MenuConfig>>("sample-data/side-menu-data.json");
     }
 }

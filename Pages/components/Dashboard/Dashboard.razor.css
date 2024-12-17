@@ -1,0 +1,59 @@
+.dashboard-container {
+    display: flex;
+    justify-content: space-between; /* Ensures one div is on the left, the other on the right */
+    align-items: center; /* Vertically aligns items */
+    height: 37vh; /* Optional: Full-height container */
+    padding: 0 20px; /* Adds some spacing on the sides */
+}
+
+.left {
+    padding: 20px;
+}
+
+.right {
+    padding: 20px;
+    display: flex;
+    /* flex-direction: column; */
+}
+
+.duration-selection{
+    margin-right: 5px;
+}
+
+.page-heading-l1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.page-heading-l2 {
+    font-weight: 500;
+    /* margin-bottom: 20px; */
+}
+
+.export-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #64748145; /* Professional gray shade */
+    color: rgb(30, 27, 27);
+    padding: 6px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap; /* Prevent text wrapping */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+    font-weight: 500;
+}
+
+/* Hover effect */
+.export-icon:hover {
+    background-color: #5a626868; /* Darker gray for hover */
+}
+
+.cards{
+    border: 1px solid #64748145;
+    border-radius: 10px;
+    text-align: left;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}

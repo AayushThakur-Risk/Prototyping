@@ -1,0 +1,97 @@
+@page "/Dashboard"
+@* Link the external CSS file here *@
+<link href="Pages/components/Dashboard/Dashboard.css" rel="stylesheet" />
+<PageTitle>Dashboard</PageTitle>
+
+<div class="dashboard-container d-flex">
+    <div class="left">
+        <div class="page-heading-l1">Website Monitoring Dashboard</div>
+        <div class="page-heading-l2">Monitor and analyze website performance across states</div>
+    </div>
+    <div class="right">
+        <div class="duration-selection">
+            <select class="form-select" style="width: auto;">
+                <option value="24h">Last 24 Hours</option>
+                <option value="1w">Last 1 Week</option>
+                <option value="2w">Last 2 Weeks</option>
+                <option value="3m">Last 3 Months</option>
+            </select>
+        </div>
+        <div class="export-icon">
+            <i class="bi bi-box-arrow-down"></i> Export
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Summary Div Section -->
+    <div class="row mb-4 text-center">
+        <!-- Total URLs with Changes div -->
+        <div class="col-md-3 mb-3">
+            <div class="cards" @onclick="() => FilterByUrlsWithChanges()">
+                <p class="small text-muted">Total Websites</p>
+                <h2 class="display-4">@urlsWithChanges</h2>
+                <p class="small text-muted">Total URLs with Changes</p>
+            </div>
+        </div>
+
+        <!-- Online -->
+        <div class="col-md-3 mb-3">
+            <div class="cards" @onclick="() => FilterByHealthyUrls()">
+                <p class="small text-muted">Online</p>
+                <h2 class="display-4">@healthyUrls</h2>
+                <p class="small text-muted">Healthy URLs</p>
+            </div>
+        </div>
+
+        <!-- Broken URLs div -->
+        <div class="col-md-3 mb-3">
+            <div class="cards" @onclick="() => FilterByBrokenUrls()">
+                <p class="small text-muted">Errors</p>
+                <h2 class="display-4">@brokenUrls</h2>
+                <p class="small text-muted">Broken URLs</p>
+            </div>
+        </div>
+
+        <!-- Significant Change div -->
+        <div class="col-md-3 mb-3">
+            <div class="cards" @onclick="() => FilterBySignificantChanges()">
+                <p class="small text-muted">Offline</p>
+                <h2 class="display-4">@significantChangeUrls</h2>
+                <p class="small text-muted">Significant Changes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Grid Table -->
+    <table class="table table-striped table-bordered mt-3 rounded-3 shadow-sm">
+        <thead>
+            <tr>
+                <th @onclick="() => SortBy(SortColumn.Url)" style="cursor: pointer;">URL</th>
+                <th @onclick="() => SortBy(SortColumn.IsHealthy)" style="cursor: pointer;">Health Status</th>
+                <th @onclick="() => SortBy(SortColumn.PercentageChange)" style="cursor: pointer;">Percentage Change</th>
+                <th @onclick="() => SortBy(SortColumn.SignificanceChange)" style="cursor: pointer;">Significance Change</th>
+                <th @onclick="() => SortBy(SortColumn.LastScraped)" style="cursor: pointer;">Last Scraped</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in pagedData)
+            {
+                <tr>
+                    <td>@item.Url</td>
+                    <td>@(item.IsHealthy ? "Healthy" : "Unhealthy")</td>
+                    <td>@item.PercentageChange%</td>
+                    <td>@item.SignificanceChange%</td>
+                    <td>@item.LastScraped.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Section -->
+    <div class="pagination d-flex justify-content-center align-items-center mt-4">
+        <button class="btn btn-primary rounded-3" @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
+        <span class="mx-3">Page @currentPage of @totalPages</span>
+        <button class="btn btn-primary rounded-3" @onclick="NextPage" disabled="@(currentPage == totalPages)">Next</button>
+    </div>
+</div>

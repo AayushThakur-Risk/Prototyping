@@ -12,5 +12,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
     <RazorComponent Include="Pages\components\Count\Count.razor" />
     <RazorComponent Include="Pages\components\Notifier\Notifier.razor" />
+    <RazorComponent Include="Pages\components\Dashboard\Dashboard.razor" />
   </ItemGroup>
 </Project>

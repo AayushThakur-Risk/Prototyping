@@ -1,0 +1,47 @@
+[
+    {
+        "NavLabel": "Navigations",
+        "Menus": [
+            {
+                "Icon": "bi bi-xbox bi-icon",
+                "Title": "Dashboard",
+                "Url": "Dashboard"
+            },
+            {
+                "Icon": "bi bi-browser-edge bi-icon",
+                "Title": "WebSites",
+                "Url": "WebSites"
+            },
+            {
+                "Icon": "bi bi-activity bi-icon",
+                "Title": "Activities",
+                "Url": "Activities"
+            }
+        ]
+    },
+    {
+        "NavLabel": "Ai Features",
+        "Menus": [
+            {
+                "Icon": "bi bi-unity bi-icon",
+                "Title": "Ai Analysis",
+                "Url": "AiAnalysis"
+            },
+            {
+                "Icon": "bi bi-steam bi-icon",
+                "Title": "Auto Monitoring",
+                "Url": "AutoMonitoring"
+            },
+            {
+                "Icon": "bi bi-search",
+                "Title": "URL Discovery",
+                "Url": "URLDiscovery"
+            },
+            {
+                "Icon": "bi bi-stack bi-icon",
+                "Title": "Advanced Tools",
+                "Url": "AdvancedTools"
+            }
+        ]
+    }
+]
