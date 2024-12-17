@@ -1866,6 +1866,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Microsoft.AspNetCore.Components.Analyzers >= 8.0.11",
       "Microsoft.AspNetCore.Components.WebAssembly >= 8.0.11",
       "Microsoft.AspNetCore.Components.WebAssembly.DevServer >= 8.0.11",
       "Microsoft.NET.ILLink.Tasks >= 8.0.11",
@@ -1873,19 +1874,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\thakura0\\.nuget\\packages\\": {}
+    "C:\\Users\\makwana1\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\thakura0\\Project\\MyBlazorWasmApp\\MyBlazorWasmApp.csproj",
+      "projectUniqueName": "C:\\Users\\makwana1\\Apps\\Prototyping\\MyBlazorWasmApp.csproj",
       "projectName": "MyBlazorWasmApp",
-      "projectPath": "C:\\Users\\thakura0\\Project\\MyBlazorWasmApp\\MyBlazorWasmApp.csproj",
-      "packagesPath": "C:\\Users\\thakura0\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\thakura0\\Project\\MyBlazorWasmApp\\obj\\",
+      "projectPath": "C:\\Users\\makwana1\\Apps\\Prototyping\\MyBlazorWasmApp.csproj",
+      "packagesPath": "C:\\Users\\makwana1\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\makwana1\\Apps\\Prototyping\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\thakura0\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\makwana1\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -1914,6 +1915,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Microsoft.AspNetCore.Components.Analyzers": {
+            "target": "Package",
+            "version": "[8.0.11, )"
+          },
           "Microsoft.AspNetCore.Components.WebAssembly": {
             "target": "Package",
             "version": "[8.0.11, )"

@@ -1,3 +1,7 @@
+.nav-top {
+    padding-top: 50px;
+}
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -85,4 +89,11 @@
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
+}
+
+
+.sub-menu {
+    margin-left: 20px;
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
 }

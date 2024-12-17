@@ -1,0 +1,86 @@
+/* Table row hover effect */
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* URL styling for visibility */
+a.text-primary {
+    color: #007bff;
+    /* Blue for visibility */
+}
+
+a.text-primary:hover {
+    text-decoration: underline;
+}
+
+/* Adjust icon size and alignment */
+.bi-check-circle-fill,
+.bi-x-circle-fill {
+    font-size: 1.2rem;
+    /* Larger size for better visibility */
+    vertical-align: middle;
+}
+
+/* Container for the highlighted section */
+.highlight-section {
+    margin-bottom: 10px;
+}
+
+/* Common label style for Previous, Current, and Percentage */
+.highlight-label {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #333;
+}
+
+/* Styling for the Previous Value */
+.highlight-value.previous {
+    background-color: #f8d7da;
+    /* Light red background for Previous Value */
+    padding: 5px;
+    border-radius: 5px;
+    color: #721c24;
+    /* Dark red text color */
+    font-weight: bold;
+}
+
+/* Styling for the Current Value */
+.highlight-value.current {
+    background-color: #d4edda;
+    /* Light green background for Current Value */
+    padding: 5px;
+    border-radius: 5px;
+    color: #155724;
+    /* Dark green text color */
+    font-weight: bold;
+}
+
+/* Styling for Percentage Change less than 50 (Professional Yellow) */
+.highlight-value.percentage-yellow {
+    background-color: #fff3e0; /* Light amber yellow background */
+    padding: 5px;
+    border-radius: 5px;
+    color: #f57c00; /* Strong amber text color */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better contrast */
+    float: right;
+    font-size: 11px;
+}
+
+/* Styling for Percentage Change greater than or equal to 50 (Professional Red) */
+.highlight-value.percentage-red {
+    background-color: #fbe9e7; /* Light coral red background */
+    padding: 5px;
+    border-radius: 5px;
+    color: #d32f2f; /* Dark red text color */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for contrast */
+    float: right;
+    font-size: 11px;
+}
+
+
+/* Add some spacing between items */
+ul li {
+    margin-bottom: 15px;
+}
