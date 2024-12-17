@@ -1,0 +1,165 @@
+<div>
+    <!-- Button to open the Manage Menu modal -->
+    <label class="add-domain" aria-label="Close" @onclick="AddDomain">Add Domain</label>
+
+    <!-- Modal for Managing Menu -->
+    @if (IsManageMenuModalVisible)
+    {
+        <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0, 0, 0, 0.5); z-index: 1050;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Menu</h5>
+                        &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-info me-2" @onclick="AddDomain">Add Domain</button>
+                        <button type="button" class="btn-close" aria-label="Close" @onclick="CloseManageMenuModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
+                            @foreach (var menu in MenuItems)
+                            {
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>@menu.Title</span>
+                                        <div>
+                                            <button class="btn btn-sm btn-warning me-2" @onclick="(() => EditMenu(menu))">Edit</button>
+                                            <button class="btn btn-sm btn-danger" @onclick="(() => DeleteMenu(menu))">Delete</button>
+                                            <button class="btn btn-sm btn-info" @onclick="(() => AddSubMenu(menu))">Add SubMenu</button>
+                                        </div>
+                                    </div>
+                                    @if (menu.SubMenus != null && menu.SubMenus.Any())
+                                    {
+                                        <ul class="list-group ms-3 mt-2">
+                                            @foreach (var subMenu in menu.SubMenus)
+                                            {
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span>@subMenu.Title</span>
+                                                    <div>
+                                                        <button class="btn btn-sm btn-warning me-2" @onclick="(() => EditMenu(subMenu))">Edit</button>
+                                                        <button class="btn btn-sm btn-danger" @onclick="(() => DeleteMenu(subMenu))">Delete</button>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                        <hr />
+                        <div class="mb-3">
+                            <label for="menuTitle" class="form-label">Menu Title</label>
+                            <input type="text" id="menuTitle" class="form-control" @bind="newMenuTitle" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="menuUrl" class="form-label">Menu URL</label>
+                            <input type="text" id="menuUrl" class="form-control" @bind="newMenuUrl" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseManageMenuModal">Close</button>
+                        <button type="button" class="btn btn-primary" @onclick="AddOrUpdateMenu">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<MenuItem> MenuItems { get; set; } = new();
+    private bool IsManageMenuModalVisible = false;
+    private string newMenuTitle = string.Empty;
+    private string newMenuUrl = string.Empty;
+    private MenuItem? menuItemToEdit = null;
+    [Parameter] public EventCallback OnClose { get; set; }
+    private MenuItem? parentMenu = null;
+    [Parameter] public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<List<MenuItem>> OnMenuItemsChanged { get; set; }
+
+    private void NotifyMenuItemsChanged(List<MenuItem> updatedMenuItems)
+    {
+        @* if (OnMenuItemsChanged.HasDelegate)
+        {
+        } *@
+        OnMenuItemsChanged.InvokeAsync(updatedMenuItems);
+    }
+
+    private void AddDomain()
+    {
+        menuItemToEdit = null;
+        parentMenu = null;
+        newMenuTitle = string.Empty;
+        newMenuUrl = string.Empty;
+        OpenManageMenuModal();
+    }
+    private void OpenManageMenuModal()
+    {
+        IsManageMenuModalVisible = true;
+    }
+
+    private void CloseManageMenuModal()
+    {
+        IsManageMenuModalVisible = false;
+        OnClose.InvokeAsync();
+        NotifyMenuItemsChanged(MenuItems);
+    }
+    private void AddOrUpdateMenu()
+    {
+        if (menuItemToEdit != null)
+        {
+            menuItemToEdit.Title = newMenuTitle;
+            menuItemToEdit.Url = newMenuUrl;
+        }
+        else if (parentMenu != null)
+        {
+            parentMenu.SubMenus ??= new List<MenuItem>();
+            parentMenu.SubMenus.Add(new MenuItem { Title = newMenuTitle, Url = newMenuUrl });
+        }
+        else
+        {
+            MenuItems.Add(new MenuItem { Title = newMenuTitle, Url = newMenuUrl });
+        }
+        menuItemToEdit = null;
+        parentMenu = null;
+        newMenuTitle = string.Empty;
+        newMenuUrl = string.Empty;
+        StateHasChanged();
+    }
+    private void EditMenu(MenuItem menuItem)
+    {
+        if (menuItem == null)
+        {
+            Console.WriteLine("menuItem is null! Debug the calling logic.");
+            return;
+        }
+        parentMenu = null;
+        menuItemToEdit = menuItem;
+        newMenuTitle = menuItem.Title;
+        newMenuUrl = menuItem.Url;
+        OpenManageMenuModal();
+    }
+    private void DeleteMenu(MenuItem menuItem)
+    {
+        if (MenuItems.Contains(menuItem))
+        {
+            MenuItems.Remove(menuItem);
+        }
+        else
+        {
+            foreach (var menu in MenuItems)
+            {
+                menu.SubMenus?.Remove(menuItem);
+            }
+        }
+    }
+
+    private void AddSubMenu(MenuItem menuItem)
+    {
+        menuItemToEdit = null;
+        parentMenu = menuItem;
+        newMenuTitle = string.Empty;
+        newMenuUrl = string.Empty;
+        OpenManageMenuModal();
+    }
+}

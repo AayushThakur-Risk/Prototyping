@@ -1,61 +1,42 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@page "/navmenu"
+@using MyBlazorWasmApp.Models
+
+@* <button class="btn btn-primary" @onclick="ShowAddMenuModal">Add Menu</button>
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">MyBlazorWasmApp</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-</div>
+</div> *@
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Count">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Count
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="courtSearch">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Court Search
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="notification">
-                <span class="bi bi-bell-fill" aria-hidden="true"></span> Notification
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="urlchangenotifier">
-                <span class="bi bi-bell-fill" aria-hidden="true"></span> Change Notifier
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/notifier">
-                <span class="bi bi-bell-fill" aria-hidden="true"></span> Notifier
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="searchChat">
-                <span class="bi bi-search" aria-hidden="true"></span> Search
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<!-- Manage Menu Component -->
+<DomainMenuManage MenuItems="@MenuItems" OnMenuItemsChanged="UpdateMenuItems" />
+
+
+
+@foreach (var item in MenuItems)
+{
+    <div class="nav-item px-3">
+        <NavLink class="nav-link" href="@item.Url">
+            <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> @item.Title
+        </NavLink>
+
+        @if (item.SubMenus?.Any() == true)
+        {
+            <div class="sub-menu">
+                @foreach (var subMenu in item.SubMenus)
+                {
+                    <NavLink class="nav-link" href="@subMenu.Url">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @subMenu.Title
+                    </NavLink>
+                }
+            </div>
+        }
+    </div>
+}
 
 @code {
     private bool collapseNavMenu = true;
@@ -65,5 +46,61 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private bool isModalVisible = false;
+    private List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
+    private MenuItem? selectedMenuItem;
+
+    private void ShowAddMenuModal()
+    {
+        selectedMenuItem = null;  // No menu selected for Add
+        isModalVisible = true;
+    }
+
+    private void ShowEditMenuModal(MenuItem menu)
+    {
+        selectedMenuItem = menu;
+        isModalVisible = true;
+    }
+
+    private void ShowDeleteMenuModal(MenuItem menu)
+    {
+        selectedMenuItem = menu;
+        isModalVisible = true;
+    }
+
+    private void AddNewMenu(MenuItem newMenu)
+    {
+        MenuItems.Add(newMenu);
+        @* CloseModal(); *@
+    }
+
+    private void EditMenu(MenuItem editedMenu)
+    {
+        var existingMenu = MenuItems.FirstOrDefault(m => m.Id == editedMenu.Id);
+        if (existingMenu != null)
+        {
+            existingMenu.Title = editedMenu.Title;
+            existingMenu.Url = editedMenu.Url;
+        }
+        CloseModal();
+    }
+
+    private void DeleteMenu(MenuItem menu)
+    {
+        MenuItems.RemoveAll(m => m.Id == menu.Id);
+        CloseModal();
+    }
+
+    private void CloseModal()
+    {
+        isModalVisible = false;
+        selectedMenuItem = null;
+    }
+
+    private void UpdateMenuItems(List<MenuItem> updatedMenuItems)
+    {
+        MenuItems = updatedMenuItems;
+        StateHasChanged();
     }
 }
