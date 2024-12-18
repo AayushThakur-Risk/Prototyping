@@ -2,7 +2,7 @@ namespace MyBlazorWasmApp.Models
 {
     public class DashboardData
     {
-        public Cards cards { get; set; }
+        public List<Cards> cards { get; set; }
         public List<MapData> mapData { get; set; }
         public TablePagination tablePagination { get; set; }
         public List<TableData> tableData { get; set; }
@@ -10,10 +10,11 @@ namespace MyBlazorWasmApp.Models
 
     public class Cards
     {
-        public double total { get; set; }
-        public double online { get; set; }
-        public double errors { get; set; }
-        public double offline { get; set; }
+        public string label { get; set; }
+        public string heading { get; set; }
+        public double count { get; set; }
+        public string description { get; set; }
+        public string cssClass { get; set; }
     }
 
     public class MapData
@@ -40,5 +41,11 @@ namespace MyBlazorWasmApp.Models
         public string priority { get; set; }
         public string lastCheckStatus { get; set; }
         public DateTime lastUpdated { get; set; }
+    }
+
+    public class SelectOption
+    {
+        public string Value { get; set; }
+        public string Text { get; set; }
     }
 }

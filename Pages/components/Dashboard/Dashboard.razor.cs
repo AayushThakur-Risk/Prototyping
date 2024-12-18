@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using MyBlazorWasmApp.Models;
 
@@ -12,19 +14,19 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         // Enum for sorting column
         public enum SortColumn
         {
-            Url,
-            IsHealthy,
-            PercentageChange,
-            SignificanceChange,
-            LastScraped,
+            url,
+            state,
+            status,
+            priority,
+            lastCheckStatus,
+            lastUpdated,
         }
 
         // List of URL data
         private List<UrlData> urlDataList = new List<UrlData>();
-        private List<UrlData> filteredData = new List<UrlData>();
-        private List<UrlData> pagedData = new List<UrlData>();
+        private List<TableData> filteredData = new List<TableData>();
+        private List<TableData> pagedData = new List<TableData>();
         private DashboardData dashboardData = new DashboardData();
-        private Cards cards = new Cards();
         private string searchTerm = "";
         private string healthFilter = "";
         private int currentPage = 1;
@@ -32,19 +34,44 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         private int totalPages = 1;
 
         // Sorting variables
-        private SortColumn sortColumn = SortColumn.Url; // Default sort column
+        private SortColumn sortColumn = SortColumn.url; // Default sort column
         private bool sortAscending = true;
 
         // Summary Calculations
-        private int healthyUrls => filteredData.Count(u => u.IsHealthy);
-        private int brokenUrls => filteredData.Count(u => !u.IsHealthy);
-        private int significantChangeUrls => filteredData.Count(u => u.SignificanceChange > 20);
-        private int urlsWithChanges => filteredData.Count(u => u.PercentageChange != 0);
+        // private int healthyUrls => filteredData.Count(u => u.IsHealthy);
+        // private int brokenUrls => filteredData.Count(u => !u.IsHealthy);
+        // private int significantChangeUrls => filteredData.Count(u => u.SignificanceChange > 20);
+        // private int urlsWithChanges => filteredData.Count(u => u.PercentageChange != 0);
 
         // Load the initial data asynchronously
 
         [Inject]
         public HttpClient Http { get; set; }
+
+        [Parameter]
+        public EventCallback<string> OnSearchChanged { get; set; }
+        private string SearchText { get; set; } = string.Empty;
+
+        private List<SelectOption> StateOptions = new()
+        {
+            new SelectOption { Value = "all", Text = "All States" },
+            new SelectOption { Value = "alabama", Text = "Alabama" },
+            new SelectOption { Value = "alaska", Text = "Alaska" },
+            new SelectOption { Value = "arizona", Text = "Arizona" },
+            new SelectOption { Value = "arkansas", Text = "Arkansas" },
+            new SelectOption { Value = "california", Text = "California" },
+            new SelectOption { Value = "colorado", Text = "Colorado" },
+            new SelectOption { Value = "connecticut", Text = "Connecticut" },
+            new SelectOption { Value = "delaware", Text = "Delaware" },
+            new SelectOption { Value = "florida", Text = "Florida" },
+            new SelectOption { Value = "georgia", Text = "Georgia" },
+            new SelectOption { Value = "hawaii", Text = "Hawaii" },
+        };
+
+        [Parameter]
+        public EventCallback<string> OnOptionSelected { get; set; }
+
+        private bool IsMapView = true; // Default view is Map View
 
         protected override async Task OnInitializedAsync()
         {
@@ -56,26 +83,54 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
                 "sample-data/dashboard-data.json"
             );
 
-            cards = dashboardData?.cards;
+            StateOptions = await Http.GetFromJsonAsync<List<SelectOption>>(
+                "sample-data/states.json"
+            );
 
-            ApplyFilters();
+            // var json = await Http.GetStringAsync("states.json");
+            // StateOptions = System.Text.Json.JsonSerializer.Deserialize<List<SelectOption>>(json);
+
+            // ApplyFilters();
             UpdatePagedData();
+        }
+
+        private void SetView(bool isMapView)
+        {
+            IsMapView = isMapView;
+        }
+
+        private async Task HandleChange(ChangeEventArgs e)
+        {
+            var selectedValue = e.Value?.ToString();
+            if (OnOptionSelected.HasDelegate)
+            {
+                await OnOptionSelected.InvokeAsync(selectedValue);
+            }
+        }
+
+        private async Task HandleSearchChanged()
+        {
+            if (OnSearchChanged.HasDelegate)
+            {
+                await OnSearchChanged.InvokeAsync(SearchText);
+            }
         }
 
         // Apply filters based on search term and health status
         private void ApplyFilters()
         {
-            filteredData = urlDataList
-                .Where(u =>
-                    string.IsNullOrEmpty(searchTerm)
-                    || u.Url.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                )
-                .Where(u =>
-                    string.IsNullOrEmpty(healthFilter)
-                    || (healthFilter == "Healthy" && u.IsHealthy)
-                    || (healthFilter == "Unhealthy" && !u.IsHealthy)
-                )
-                .ToList();
+            filteredData = dashboardData?.tableData;
+            // .Where(u =>
+            //     string.IsNullOrEmpty(searchTerm)
+            //     || u.url.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            // )
+            // .Where(u =>
+            //     string.IsNullOrEmpty(healthFilter)
+            //     // || (healthFilter == "Healthy" && u.IsHealthy)
+            //     // || (healthFilter == "Unhealthy" && !u.IsHealthy)
+            //     || (healthFilter == "Unhealthy" && !u.IsHealthy)
+            // )
+            // .ToList();
 
             // Reset the current page to 1 whenever filters are applied
             currentPage = 1;
@@ -87,33 +142,33 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         // Filter by Total URLs with Changes
         private void FilterByUrlsWithChanges()
         {
-            filteredData = urlDataList.Where(u => u.PercentageChange != 0).ToList();
+            // filteredData = urlDataList.Where(u => u.PercentageChange != 0).ToList();
             ApplyFilters(); // Reapply filters and refresh the page
         }
 
         // Filter by Healthy URLs
-        private void FilterByHealthyUrls()
-        {
-            filteredData = urlDataList.Where(u => u.IsHealthy).ToList();
-            ApplyFilters();
-            UpdatePagedData();
-        }
+        // private void FilterByHealthyUrls()
+        // {
+        //     filteredData = urlDataList.Where(u => u.IsHealthy).ToList();
+        //     ApplyFilters();
+        //     UpdatePagedData();
+        // }
 
         // Filter by Broken URLs
-        private void FilterByBrokenUrls()
-        {
-            filteredData = urlDataList.Where(u => !u.IsHealthy).ToList();
-            ApplyFilters();
-            UpdatePagedData();
-        }
+        // private void FilterByBrokenUrls()
+        // {
+        //     filteredData = urlDataList.Where(u => !u.IsHealthy).ToList();
+        //     ApplyFilters();
+        //     UpdatePagedData();
+        // }
 
         // Filter by Significant Changes
-        private void FilterBySignificantChanges()
-        {
-            filteredData = urlDataList.Where(u => u.SignificanceChange > 20).ToList();
-            ApplyFilters();
-            UpdatePagedData();
-        }
+        // private void FilterBySignificantChanges()
+        // {
+        //     filteredData = urlDataList.Where(u => u.SignificanceChange > 20).ToList();
+        //     ApplyFilters();
+        //     UpdatePagedData();
+        // }
 
         // Sorting logic for different columns using the enum
         private void SortBy(SortColumn column)
@@ -131,21 +186,24 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
             // Sort based on the selected column and order
             filteredData = sortColumn switch
             {
-                SortColumn.Url => sortAscending
-                    ? filteredData.OrderBy(u => u.Url).ToList()
-                    : filteredData.OrderByDescending(u => u.Url).ToList(),
-                SortColumn.IsHealthy => sortAscending
-                    ? filteredData.OrderBy(u => u.IsHealthy).ToList()
-                    : filteredData.OrderByDescending(u => u.IsHealthy).ToList(),
-                SortColumn.PercentageChange => sortAscending
-                    ? filteredData.OrderBy(u => u.PercentageChange).ToList()
-                    : filteredData.OrderByDescending(u => u.PercentageChange).ToList(),
-                SortColumn.SignificanceChange => sortAscending
-                    ? filteredData.OrderBy(u => u.SignificanceChange).ToList()
-                    : filteredData.OrderByDescending(u => u.SignificanceChange).ToList(),
-                SortColumn.LastScraped => sortAscending
-                    ? filteredData.OrderBy(u => u.LastScraped).ToList()
-                    : filteredData.OrderByDescending(u => u.LastScraped).ToList(),
+                SortColumn.url => sortAscending
+                    ? filteredData.OrderBy(u => u.url).ToList()
+                    : filteredData.OrderByDescending(u => u.url).ToList(),
+                SortColumn.state => sortAscending
+                    ? filteredData.OrderBy(u => u.state).ToList()
+                    : filteredData.OrderByDescending(u => u.state).ToList(),
+                SortColumn.status => sortAscending
+                    ? filteredData.OrderBy(u => u.status).ToList()
+                    : filteredData.OrderByDescending(u => u.status).ToList(),
+                SortColumn.priority => sortAscending
+                    ? filteredData.OrderBy(u => u.priority).ToList()
+                    : filteredData.OrderByDescending(u => u.priority).ToList(),
+                SortColumn.lastCheckStatus => sortAscending
+                    ? filteredData.OrderBy(u => u.lastCheckStatus).ToList()
+                    : filteredData.OrderByDescending(u => u.lastCheckStatus).ToList(),
+                SortColumn.lastUpdated => sortAscending
+                    ? filteredData.OrderBy(u => u.lastUpdated).ToList()
+                    : filteredData.OrderByDescending(u => u.lastUpdated).ToList(),
                 _ => filteredData,
             };
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "VOyof3428gY=",
+  "dgSpecHash": "pRyF1YrqGSs=",
   "success": true,
   "projectFilePath": "C:\\Users\\makwana1\\Apps\\Prototyping\\MyBlazorWasmApp.csproj",
   "expectedPackageFiles": [
@@ -29,7 +29,7 @@
     "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.jsinterop\\8.0.11\\microsoft.jsinterop.8.0.11.nupkg.sha512",
     "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.jsinterop.webassembly\\8.0.11\\microsoft.jsinterop.webassembly.8.0.11.nupkg.sha512",
     "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.11\\microsoft.net.illink.tasks.8.0.11.nupkg.sha512",
-    "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\8.0.11\\microsoft.net.sdk.webassembly.pack.8.0.11.nupkg.sha512",
+    "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\9.0.0\\microsoft.net.sdk.webassembly.pack.9.0.0.nupkg.sha512",
     "C:\\Users\\makwana1\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\makwana1\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\8.0.11\\microsoft.netcore.app.runtime.mono.browser-wasm.8.0.11.nupkg.sha512"
   ],

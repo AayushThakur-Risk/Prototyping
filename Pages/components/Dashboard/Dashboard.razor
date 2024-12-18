@@ -27,100 +27,162 @@
     </div>
     <!-- Summary Div Section -->
     <div class="row mb-4 text-center">
+
+        @foreach (var card in dashboardData?.cards)
+        {
+            <div class="col-md-3 mb-3">
+                <div class="@card?.cssClass" @onclick="() => FilterByUrlsWithChanges()">
+                    <div class="small">@card?.heading</div>
+                    <div class="card-counter ">@card?.count</div>
+                    <div class="small">@card?.description</div>
+                </div>
+            </div>
+        }
+
         <!-- Total URLs with Changes div -->
-        <div class="col-md-3 mb-3">
+        @* <div class="col-md-3 mb-3">
             <div class="cards all-count" @onclick="() => FilterByUrlsWithChanges()">
                 <div class="small">Total Websites</div>
                 <div class="card-counter ">@cards?.total</div>
                 <div class="small">Total URLs with Changes</div>
             </div>
-        </div>
+        </div> *@
 
         <!-- Online -->
-        <div class="col-md-3 mb-3">
+        @* <div class="col-md-3 mb-3">
             <div class="cards online" @onclick="() => FilterByHealthyUrls()">
                 <div class="small">Online</div>
                 <div class="card-counter">@cards?.online</div>
                 <div class="small">Healthy URLs</div>
             </div>
-        </div>
+        </div> *@
 
         <!-- Broken URLs div -->
-        <div class="col-md-3 mb-3 error">
+        @* <div class="col-md-3 mb-3 error">
             <div class="cards" @onclick="() => FilterByBrokenUrls()">
                 <div class="small">Errors</div>
                 <div class="card-counter">@cards?.errors</div>
                 <div class="small">Broken URLs</div>
             </div>
-        </div>
+        </div> *@
 
         <!-- Significant Change div -->
-        <div class="col-md-3 mb-3">
+        @* <div class="col-md-3 mb-3">
             <div class="cards offline" @onclick="() => FilterBySignificantChanges()">
                 <div class="small">Offline</div>
                 <div class="card-counter">@cards?.offline</div>
                 <div class="small">Significant Changes</div>
             </div>
-        </div>
+        </div> *@
     </div>
 
-    <div class="dashboard-container d-flex">
-        <div class="left">
-            @* <div class="d-flex justify-content-start mb-3">
-                <button class="btn btn-outline-primary me-2" >
-                    <i class="bi bi-map"></i> Map View
-                </button>
-                <button class="btn btn-outline-primary" >
-                    <i class="bi bi-table"></i> Table View
-                </button>
-            </div> *@
+    <div class="filter-view d-flex">
+        @* <div class="left">
             <div class="d-flex justify-content-start mb-3 toggle">
-                <!-- Light Grey Div (Map View) -->
                 <div class="view-toggle" style="background-color:"#d3d3d3"">
                     <i class="bi bi-map"></i> Map View
                 </div>
 
-                <!-- Dark Grey Div (Table View) -->
                 <div class="view-toggle ms-2" style="background-color:"#f8f9fa"">
                     <i class="bi bi-table"></i> Table View
                 </div>
             </div>
+        </div> *@
+        <div class="d-flex justify-content-start mb-3 toggle">
+            <!-- Map View Toggle -->
+            <div class="view-toggle" 
+                style="background-color: @(IsMapView ? "#ffffff" : "#cbcbcb59")"
+                @onclick="() => SetView(true)">
+                <i class="bi bi-map"></i> Map View
+            </div>
+
+            <!-- Table View Toggle -->
+            <div class="view-toggle ms-2" 
+                style="background-color: @(!IsMapView ? "#ffffff" : "#cbcbcb59")"
+                @onclick="() => SetView(false)">
+                <i class="bi bi-table"></i> Table View
+            </div>
         </div>
         <div class="right">
-            
+            <div class="search-box">
+                <!-- Search Icon -->
+                <i class="icon bi bi-search"></i>
+
+                <!-- Search Input -->
+                <input @bind="SearchText" @bind:event="oninput" 
+                    type="text" placeholder="Search..." />
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-list"></i>
+                </span>
+                <select class="form-select" @onchange="HandleChange">
+                    @foreach (var option in StateOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+            </div>
         </div>
     </div>
 
 
-    <!-- Data Grid Table -->
-    <table class="table table-striped table-bordered mt-3 rounded-3 shadow-sm">
-        <thead>
-            <tr>
-                <th @onclick="() => SortBy(SortColumn.Url)" style="cursor: pointer;">URL</th>
-                <th @onclick="() => SortBy(SortColumn.IsHealthy)" style="cursor: pointer;">Health Status</th>
-                <th @onclick="() => SortBy(SortColumn.PercentageChange)" style="cursor: pointer;">Percentage Change</th>
-                <th @onclick="() => SortBy(SortColumn.SignificanceChange)" style="cursor: pointer;">Significance Change</th>
-                <th @onclick="() => SortBy(SortColumn.LastScraped)" style="cursor: pointer;">Last Scraped</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in pagedData)
-            {
-                <tr>
-                    <td>@item.Url</td>
-                    <td>@(item.IsHealthy ? "Healthy" : "Unhealthy")</td>
-                    <td>@item.PercentageChange%</td>
-                    <td>@item.SignificanceChange%</td>
-                    <td>@item.LastScraped.ToString("yyyy-MM-dd HH:mm")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div>
+        @if (IsMapView)
+        {
+            @* <p>Map View Content</p> *@
+            <!-- Replace with your map view implementation -->
+        }
+        else
+        {
+             <!-- Data Grid Table -->
+            <table class="table table-bordered mt-3 rounded-3 shadow-sm">
+                <thead>
+                    <tr>
+                        <th @onclick="() => SortBy(SortColumn.url)" style="cursor: pointer;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck">
+                            </div>
+                        </th>
+                        <th @onclick="() => SortBy(SortColumn.url)" style="cursor: pointer;">Name <i class="bi bi-sort-down"></i> </th>
+                        <th @onclick="() => SortBy(SortColumn.state)" style="cursor: pointer;">State <i class="bi bi-sort-down"></i></th>
+                        <th @onclick="() => SortBy(SortColumn.status)" style="cursor: pointer;">Status <i class="bi bi-sort-down"></i></th>
+                        <th @onclick="() => SortBy(SortColumn.priority)" style="cursor: pointer;">Priority <i class="bi bi-sort-down"></i></th>
+                        <th @onclick="() => SortBy(SortColumn.lastCheckStatus)" style="cursor: pointer;">Last Check <i class="bi bi-sort-down"></i></th>
+                        <th @onclick="() => SortBy(SortColumn.lastUpdated)" style="cursor: pointer;">Last Updated <i class="bi bi-sort-down"></i></th>
+                        <th @onclick="() => SortBy(SortColumn.lastUpdated)" style="cursor: pointer;">Actions <i class="bi bi-sort-down"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var data in dashboardData?.tableData)
+                    {
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck">
+                                </div>
+                            </td>
+                            <td><div>@data.url</div></td>
+                            <td><div>@data.state</div></td>
+                            <td><div class="@data.status-label">@data.status</div></td>
+                            <td><div class="@data.priority-label">@data.priority</div></td>
+                            <td><div>@data.lastCheckStatus</div></td>
+                            <td><div>@data.lastUpdated.ToString("yyyy-MM-dd HH:mm")</div></td>
+                            <td><div class="refreshURL"><i class="bi bi-arrow-clockwise"></i> Check Now</div></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-    <!-- Pagination Section -->
-    <div class="pagination d-flex justify-content-center align-items-center mt-4">
-        <button class="btn btn-primary rounded-3" @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
-        <span class="mx-3">Page @currentPage of @totalPages</span>
-        <button class="btn btn-primary rounded-3" @onclick="NextPage" disabled="@(currentPage == totalPages)">Next</button>
+            <!-- Pagination Section -->
+            <div class="pagination d-flex justify-content-center align-items-center mt-4">
+                <button class="btn btn-primary rounded-3" @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
+                <span class="mx-3">Page @currentPage of @totalPages</span>
+                <button class="btn btn-primary rounded-3" @onclick="NextPage" disabled="@(currentPage == totalPages)">Next</button>
+            </div>
+        }
     </div>
+
+
+   
 </div>
