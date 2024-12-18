@@ -1,10 +1,34 @@
 {
-    "cards": {
-        "total": 1000,
-        "online": 850,
-        "errors": 75,
-        "offline": 75
-    },
+    "cards": [
+        {
+            "label": "Total",
+            "heading": "Total Websites",
+            "count": 1000,
+            "description": "Total URL with changes",
+            "cssClass": "cards all-count"
+        },
+        {
+            "label": "Online",
+            "heading": "Online",
+            "count": 850,
+            "description": "Healthy URLs",
+            "cssClass": "cards online"
+        },
+        {
+            "label": "Errors",
+            "heading": "Online",
+            "count": 75,
+            "description": "Broken URLs",
+            "cssClass": "cards error"
+        },
+        {
+            "label": "Offline",
+            "heading": "Offline",
+            "count": 77,
+            "description": "Significant Changes",
+            "cssClass": "cards offline"
+        }
+    ],
     "mapData": [
         {
             "state": "California",
