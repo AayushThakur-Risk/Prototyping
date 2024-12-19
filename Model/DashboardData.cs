@@ -6,6 +6,7 @@ namespace MyBlazorWasmApp.Models
         public List<MapData> mapData { get; set; }
         public TablePagination tablePagination { get; set; }
         public List<TableData> tableData { get; set; }
+        public List<ColumnLabels> columnLabels { get; set; }
     }
 
     public class Cards
@@ -28,9 +29,9 @@ namespace MyBlazorWasmApp.Models
 
     public class TablePagination
     {
-        public double totalRows { get; set; }
-        public double rowsPerPage { get; set; }
-        public double currentPage { get; set; }
+        public int totalRows { get; set; }
+        public int rowsPerPage { get; set; }
+        public int currentPage { get; set; }
     }
 
     public class TableData
@@ -47,5 +48,11 @@ namespace MyBlazorWasmApp.Models
     {
         public string Value { get; set; }
         public string Text { get; set; }
+    }
+
+    public class ColumnLabels
+    {
+        public string title { get; set; }
+        public string key { get; set; }
     }
 }

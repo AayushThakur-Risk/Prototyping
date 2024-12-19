@@ -16,7 +16,7 @@
         },
         {
             "label": "Broken",
-            "heading": "Online",
+            "heading": "Broken",
             "count": 75,
             "description": "Broken URLs",
             "cssClass": "cards error"
@@ -116,7 +116,7 @@
         }
     ],
     "tablePagination": {
-        "totalRows": 100,
+        "totalRows": 20,
         "rowsPerPage": 10,
         "currentPage": 1
     },
@@ -148,7 +148,7 @@
     ],
     "tableData": [
         {
-            "url": "https://example1.com",
+            "url": "https://student1.com",
             "state": "California",
             "status": "Online",
             "priority": "High",
@@ -156,7 +156,7 @@
             "lastUpdated": "2024-06-17T12:45:00Z"
         },
         {
-            "url": "https://example2.com",
+            "url": "https://student2.com",
             "state": "Texas",
             "status": "Offline",
             "priority": "Medium",
@@ -164,7 +164,7 @@
             "lastUpdated": "2024-06-17T12:40:00Z"
         },
         {
-            "url": "https://example3.com",
+            "url": "https://student3.com",
             "state": "New York",
             "status": "Error",
             "priority": "High",
@@ -172,7 +172,7 @@
             "lastUpdated": "2024-06-17T12:50:00Z"
         },
         {
-            "url": "https://example4.com",
+            "url": "https://student4.com",
             "state": "Florida",
             "status": "Online",
             "priority": "Low",
@@ -180,7 +180,7 @@
             "lastUpdated": "2024-06-17T12:48:00Z"
         },
         {
-            "url": "https://example5.com",
+            "url": "https://student5.com",
             "state": "Illinois",
             "status": "Online",
             "priority": "Medium",
@@ -188,7 +188,7 @@
             "lastUpdated": "2024-06-17T12:42:00Z"
         },
         {
-            "url": "https://example6.com",
+            "url": "https://student6.com",
             "state": "Texas",
             "status": "Error",
             "priority": "High",
@@ -196,7 +196,7 @@
             "lastUpdated": "2024-06-17T12:41:00Z"
         },
         {
-            "url": "https://example7.com",
+            "url": "https://student7.com",
             "state": "California",
             "status": "Offline",
             "priority": "High",
@@ -204,7 +204,7 @@
             "lastUpdated": "2024-06-17T12:39:00Z"
         },
         {
-            "url": "https://example8.com",
+            "url": "https://student8.com",
             "state": "Ohio",
             "status": "Online",
             "priority": "Low",
@@ -212,7 +212,7 @@
             "lastUpdated": "2024-06-17T12:30:00Z"
         },
         {
-            "url": "https://example9.com",
+            "url": "https://student9.com",
             "state": "Georgia",
             "status": "Online",
             "priority": "Medium",
@@ -220,7 +220,87 @@
             "lastUpdated": "2024-06-17T12:35:00Z"
         },
         {
-            "url": "https://example10.com",
+            "url": "https://student10.com",
+            "state": "North Carolina",
+            "status": "Error",
+            "priority": "High",
+            "lastCheckStatus": "400",
+            "lastUpdated": "2024-06-17T12:37:00Z"
+        },
+        {
+            "url": "https://student1.com",
+            "state": "California",
+            "status": "Online",
+            "priority": "High",
+            "lastCheckStatus": "200",
+            "lastUpdated": "2024-06-17T12:45:00Z"
+        },
+        {
+            "url": "https://student2.com",
+            "state": "Texas",
+            "status": "Offline",
+            "priority": "Medium",
+            "lastCheckStatus": "500",
+            "lastUpdated": "2024-06-17T12:40:00Z"
+        },
+        {
+            "url": "https://student3.com",
+            "state": "New York",
+            "status": "Error",
+            "priority": "High",
+            "lastCheckStatus": "404",
+            "lastUpdated": "2024-06-17T12:50:00Z"
+        },
+        {
+            "url": "https://student4.com",
+            "state": "Florida",
+            "status": "Online",
+            "priority": "Low",
+            "lastCheckStatus": "200",
+            "lastUpdated": "2024-06-17T12:48:00Z"
+        },
+        {
+            "url": "https://student5.com",
+            "state": "Illinois",
+            "status": "Online",
+            "priority": "Medium",
+            "lastCheckStatus": "200",
+            "lastUpdated": "2024-06-17T12:42:00Z"
+        },
+        {
+            "url": "https://student6.com",
+            "state": "Texas",
+            "status": "Error",
+            "priority": "High",
+            "lastCheckStatus": "503",
+            "lastUpdated": "2024-06-17T12:41:00Z"
+        },
+        {
+            "url": "https://student7.com",
+            "state": "California",
+            "status": "Offline",
+            "priority": "High",
+            "lastCheckStatus": "Timeout",
+            "lastUpdated": "2024-06-17T12:39:00Z"
+        },
+        {
+            "url": "https://student8.com",
+            "state": "Ohio",
+            "status": "Online",
+            "priority": "Low",
+            "lastCheckStatus": "200",
+            "lastUpdated": "2024-06-17T12:30:00Z"
+        },
+        {
+            "url": "https://student9.com",
+            "state": "Georgia",
+            "status": "Online",
+            "priority": "Medium",
+            "lastCheckStatus": "200",
+            "lastUpdated": "2024-06-17T12:35:00Z"
+        },
+        {
+            "url": "https://student10.com",
             "state": "North Carolina",
             "status": "Error",
             "priority": "High",

@@ -11,39 +11,28 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
 {
     public partial class Dashboard
     {
-        // Enum for sorting column
-        public enum SortColumn
-        {
-            url,
-            state,
-            status,
-            priority,
-            lastCheckStatus,
-            lastUpdated,
-        }
-
         // List of URL data
-        private List<UrlData> urlDataList = new List<UrlData>();
-        private List<TableData> filteredData = new List<TableData>();
+        // private List<TableData> filteredData = new List<TableData>();
+        private List<ColumnLabels> columnLabels = new List<ColumnLabels>();
         private List<TableData> pagedData = new List<TableData>();
         private DashboardData dashboardData = new DashboardData();
+        private TablePagination tablePagination = new TablePagination();
+
+        private List<object> FilteredData =>
+            string.IsNullOrWhiteSpace(SearchText)
+                ? dashboardData?.tableData.Cast<object>().ToList()
+                : dashboardData
+                    ?.tableData.Where(data => FilterCondition(data))
+                    .Cast<object>()
+                    .ToList();
+
         private string searchTerm = "";
         private string healthFilter = "";
         private int currentPage = 1;
         private int pageSize = 10;
         private int totalPages = 1;
-
-        // Sorting variables
-        private SortColumn sortColumn = SortColumn.url; // Default sort column
-        private bool sortAscending = true;
-
-        // Summary Calculations
-        // private int healthyUrls => filteredData.Count(u => u.IsHealthy);
-        // private int brokenUrls => filteredData.Count(u => !u.IsHealthy);
-        // private int significantChangeUrls => filteredData.Count(u => u.SignificanceChange > 20);
-        // private int urlsWithChanges => filteredData.Count(u => u.PercentageChange != 0);
-
-        // Load the initial data asynchronously
+        private string currentSortKey = ""; // Current column key being sorted
+        private bool isAscending = true; // Sort direction (ascending or descending)
 
         [Inject]
         public HttpClient Http { get; set; }
@@ -68,30 +57,74 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
             new SelectOption { Value = "hawaii", Text = "Hawaii" },
         };
 
+        private int TotalPages =>
+            (int)Math.Ceiling((double)tablePagination.totalRows / tablePagination.rowsPerPage);
+
         [Parameter]
         public EventCallback<string> OnOptionSelected { get; set; }
 
         private bool IsMapView = true; // Default view is Map View
+        private string SelectedDomain = "traffic"; // Default value
+
+        private Timer? _debounceTimer;
 
         protected override async Task OnInitializedAsync()
         {
-            urlDataList = await Http.GetFromJsonAsync<List<UrlData>>(
-                "sample-data/dummy-url-data.json"
-            );
-
-            dashboardData = await Http.GetFromJsonAsync<DashboardData>(
-                "sample-data/dashboard-data.json"
-            );
-
             StateOptions = await Http.GetFromJsonAsync<List<SelectOption>>(
                 "sample-data/states.json"
             );
 
-            // var json = await Http.GetStringAsync("states.json");
-            // StateOptions = System.Text.Json.JsonSerializer.Deserialize<List<SelectOption>>(json);
-
             // ApplyFilters();
-            UpdatePagedData();
+            // Load the default JSON file on component initialization
+            await LoadJsonDataAsync();
+            // UpdatePagedData();
+        }
+
+        private async Task OnDomainChanged(ChangeEventArgs e)
+        {
+            SelectedDomain = e.Value?.ToString() ?? "";
+            Console.WriteLine($"Selected domain changed to: {SelectedDomain}");
+            await LoadJsonDataAsync();
+        }
+
+        private void OnSearchInput(ChangeEventArgs e)
+        {
+            SearchText = e.Value?.ToString() ?? string.Empty;
+
+            _debounceTimer?.Dispose();
+            _debounceTimer = new Timer(
+                _ =>
+                {
+                    InvokeAsync(StateHasChanged);
+                },
+                null,
+                300,
+                Timeout.Infinite
+            );
+        }
+
+        private async Task LoadJsonDataAsync()
+        {
+            try
+            {
+                // Determine the file to load based on the selected domain
+                string fileName = SelectedDomain == "traffic" ? "traffic.json" : "student.json";
+
+                // Fetch the JSON data
+                dashboardData = await Http.GetFromJsonAsync<DashboardData>(
+                    "sample-data/" + SelectedDomain + ".json"
+                );
+
+                tablePagination = dashboardData.tablePagination;
+
+                tablePagination.totalRows = dashboardData.tableData?.Count ?? 0;
+
+                columnLabels = dashboardData.columnLabels;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading data: {ex.Message}");
+            }
         }
 
         private void SetView(bool isMapView)
@@ -102,6 +135,7 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         private async Task HandleChange(ChangeEventArgs e)
         {
             var selectedValue = e.Value?.ToString();
+            Console.WriteLine(selectedValue);
             if (OnOptionSelected.HasDelegate)
             {
                 await OnOptionSelected.InvokeAsync(selectedValue);
@@ -119,125 +153,168 @@ namespace MyBlazorWasmApp.Pages.components.Dashboard
         // Apply filters based on search term and health status
         private void ApplyFilters()
         {
-            filteredData = dashboardData?.tableData;
-            // .Where(u =>
-            //     string.IsNullOrEmpty(searchTerm)
-            //     || u.url.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-            // )
-            // .Where(u =>
-            //     string.IsNullOrEmpty(healthFilter)
-            //     // || (healthFilter == "Healthy" && u.IsHealthy)
-            //     // || (healthFilter == "Unhealthy" && !u.IsHealthy)
-            //     || (healthFilter == "Unhealthy" && !u.IsHealthy)
-            // )
-            // .ToList();
+            // filteredData = dashboardData?.tableData;
+            // // Reset the current page to 1 whenever filters are applied
+            // currentPage = 1;
 
-            // Reset the current page to 1 whenever filters are applied
-            currentPage = 1;
-
-            totalPages = (int)Math.Ceiling((double)filteredData.Count / pageSize);
-            UpdatePagedData();
+            // totalPages = (int)Math.Ceiling((double)filteredData.Count / pageSize);
+            // UpdatePagedData();
         }
 
         // Filter by Total URLs with Changes
         private void FilterByUrlsWithChanges()
         {
             // filteredData = urlDataList.Where(u => u.PercentageChange != 0).ToList();
-            ApplyFilters(); // Reapply filters and refresh the page
+            // ApplyFilters(); // Reapply filters and refresh the page
         }
 
-        // Filter by Healthy URLs
-        // private void FilterByHealthyUrls()
-        // {
-        //     filteredData = urlDataList.Where(u => u.IsHealthy).ToList();
-        //     ApplyFilters();
-        //     UpdatePagedData();
-        // }
-
-        // Filter by Broken URLs
-        // private void FilterByBrokenUrls()
-        // {
-        //     filteredData = urlDataList.Where(u => !u.IsHealthy).ToList();
-        //     ApplyFilters();
-        //     UpdatePagedData();
-        // }
-
-        // Filter by Significant Changes
-        // private void FilterBySignificantChanges()
-        // {
-        //     filteredData = urlDataList.Where(u => u.SignificanceChange > 20).ToList();
-        //     ApplyFilters();
-        //     UpdatePagedData();
-        // }
-
-        // Sorting logic for different columns using the enum
-        private void SortBy(SortColumn column)
+        private void SortBy(string key)
         {
-            if (sortColumn == column)
+            if (currentSortKey == key)
             {
-                sortAscending = !sortAscending; // Toggle sorting order
+                // Toggle sort direction if sorting the same column
+                isAscending = !isAscending;
             }
             else
             {
-                sortColumn = column;
-                sortAscending = true; // Reset to ascending order when switching columns
+                // Set new sort column and default to ascending
+                currentSortKey = key;
+                isAscending = true;
             }
 
-            // Sort based on the selected column and order
-            filteredData = sortColumn switch
+            // Sort the data
+            if (dashboardData?.tableData != null)
             {
-                SortColumn.url => sortAscending
-                    ? filteredData.OrderBy(u => u.url).ToList()
-                    : filteredData.OrderByDescending(u => u.url).ToList(),
-                SortColumn.state => sortAscending
-                    ? filteredData.OrderBy(u => u.state).ToList()
-                    : filteredData.OrderByDescending(u => u.state).ToList(),
-                SortColumn.status => sortAscending
-                    ? filteredData.OrderBy(u => u.status).ToList()
-                    : filteredData.OrderByDescending(u => u.status).ToList(),
-                SortColumn.priority => sortAscending
-                    ? filteredData.OrderBy(u => u.priority).ToList()
-                    : filteredData.OrderByDescending(u => u.priority).ToList(),
-                SortColumn.lastCheckStatus => sortAscending
-                    ? filteredData.OrderBy(u => u.lastCheckStatus).ToList()
-                    : filteredData.OrderByDescending(u => u.lastCheckStatus).ToList(),
-                SortColumn.lastUpdated => sortAscending
-                    ? filteredData.OrderBy(u => u.lastUpdated).ToList()
-                    : filteredData.OrderByDescending(u => u.lastUpdated).ToList(),
-                _ => filteredData,
-            };
+                if (isAscending)
+                {
+                    dashboardData.tableData = dashboardData
+                        .tableData.OrderBy(data => GetPropertyValue(data, key)?.ToString())
+                        .ToList();
+                }
+                else
+                {
+                    dashboardData.tableData = dashboardData
+                        .tableData.OrderByDescending(data =>
+                            GetPropertyValue(data, key)?.ToString()
+                        )
+                        .ToList();
+                }
+            }
+        }
 
-            // Update the paginated data after sorting
-            UpdatePagedData();
+        private object GetPropertyValue(object obj, string propertyName)
+        {
+            if (obj == null || string.IsNullOrEmpty(propertyName))
+                return null;
+
+            var property = obj.GetType().GetProperty(propertyName);
+            return property?.GetValue(obj);
+        }
+
+        private bool FilterCondition(object data)
+        {
+            foreach (var column in dashboardData?.columnLabels ?? new List<ColumnLabels>())
+            {
+                var value = GetPropertyValue(data, column.key)?.ToString();
+                if (
+                    !string.IsNullOrWhiteSpace(value)
+                    && value.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+                )
+                {
+                    Console.WriteLine($"Value: {value}");
+                    Console.WriteLine("true");
+                    return true;
+                }
+            }
+            Console.WriteLine("false");
+            return false;
+        }
+
+        private List<MyBlazorWasmApp.Models.TableData> GetFilteredAndPaginatedData()
+        {
+            // Apply filtering
+            var filteredData = string.IsNullOrWhiteSpace(SearchText)
+                ? dashboardData?.tableData
+                : dashboardData?.tableData.Where(data => FilterCondition(data)).ToList();
+
+            // Apply pagination
+            int startIndex = (tablePagination.currentPage - 1) * tablePagination.rowsPerPage;
+            return filteredData?.Skip(startIndex).Take(tablePagination.rowsPerPage).ToList();
         }
 
         // Next page pagination logic
-        private void NextPage()
-        {
-            if (currentPage < totalPages)
-            {
-                currentPage++;
-                UpdatePagedData();
-            }
-        }
+        // private void NextPage()
+        // {
+        //     // if (currentPage < totalPages)
+        //     // {
+        //     //     currentPage++;
+        //     //     UpdatePagedData();
+        //     // }
+        // }
 
         // Previous page pagination logic
-        private void PreviousPage()
+        // private void PreviousPage()
+        // {
+        //     // if (currentPage > 1)
+        //     // {
+        //     //     currentPage--;
+        //     //     UpdatePagedData();
+        //     // }
+        // }
+
+        // Update the paged data based on current page and page size
+        // private void UpdatePagedData()
+        // {
+        //     // // Ensure the current page is within bounds
+        //     // currentPage = Math.Min(currentPage, totalPages);
+
+        //     // pagedData = filteredData.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+        // }
+
+        // private List<MyBlazorWasmApp.Models.TableData> GetPaginatedData()
+        // {
+        //     int startIndex = (tablePagination.currentPage - 1) * tablePagination.rowsPerPage;
+        //     return dashboardData
+        //             ?.tableData?.Skip(startIndex)
+        //             .Take(tablePagination.rowsPerPage)
+        //             .ToList() ?? new List<MyBlazorWasmApp.Models.TableData>();
+        // }
+
+        private List<MyBlazorWasmApp.Models.TableData> GetPaginatedData()
         {
-            if (currentPage > 1)
+            int startIndex = (tablePagination.currentPage - 1) * tablePagination.rowsPerPage;
+            var paginatedData =
+                dashboardData
+                    ?.tableData?.Skip(startIndex)
+                    .Take(tablePagination.rowsPerPage)
+                    .ToList() ?? new List<MyBlazorWasmApp.Models.TableData>();
+
+            Console.WriteLine(
+                $"Current Page: {tablePagination.currentPage}, Data Count: {paginatedData.Count}"
+            );
+            return paginatedData;
+        }
+
+        private void GoToPreviousPage()
+        {
+            if (tablePagination.currentPage > 1)
             {
-                currentPage--;
-                UpdatePagedData();
+                tablePagination.currentPage--;
             }
         }
 
-        // Update the paged data based on current page and page size
-        private void UpdatePagedData()
+        private void GoToNextPage()
         {
-            // Ensure the current page is within bounds
-            currentPage = Math.Min(currentPage, totalPages);
+            if (tablePagination.currentPage < TotalPages)
+            {
+                tablePagination.currentPage++;
+            }
+        }
 
-            pagedData = filteredData.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+        private void GoToPage(int pageNumber)
+        {
+            Console.WriteLine(" pageNumber : ", pageNumber);
+            tablePagination.currentPage = pageNumber;
         }
     }
 }
